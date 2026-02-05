@@ -165,10 +165,8 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget _buildEventCard(BuildContext context, Event event, DataProvider dataProvider) {
     final color = AppTheme.getClassificationColor(event.classification);
     
-    String timeText;
-    if (event.isAllDay) {
-      timeText = 'All day';
-    } else if (event.hasEndTime) {
+   String timeText;
+    if (event.hasEndTime) {
       timeText = '${DateFormat('h:mm a').format(event.startTime)} - ${DateFormat('h:mm a').format(event.endTime!)}';
     } else {
       timeText = 'Due: ${DateFormat('h:mm a').format(event.startTime)}';
