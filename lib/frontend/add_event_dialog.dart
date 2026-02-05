@@ -40,7 +40,6 @@ class _AddEventDialogState extends State<AddEventDialog>
   String _estimatedDuration = '1h';
   DateTime? _startTime;
   DateTime? _endTime;
-  bool _isAllDay = false;
   bool _isCompleted = false;
   bool _isImportant = false;
   List<VoiceNote> _voiceNotes = [];
@@ -87,7 +86,6 @@ class _AddEventDialogState extends State<AddEventDialog>
       _estimatedDuration = widget.editEvent!.estimatedDuration ?? '1h';
       _startTime = widget.editEvent!.startTime;
       _endTime = widget.editEvent!.endTime;
-      _isAllDay = widget.editEvent!.isAllDay;
       _isCompleted = widget.editEvent!.isCompleted;
       _isImportant = widget.editEvent!.isImportant;
       _voiceNotes = List.from(widget.editEvent!.voiceNotes);
@@ -160,49 +158,41 @@ class _AddEventDialogState extends State<AddEventDialog>
   }
 
   Future<void> _selectDateTime(bool isStart) async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: isStart ? _startTime! : (_endTime ?? _startTime!),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-    );
-
-    if (date != null && !_isAllDay) {
-      final time = await showTimePicker(
+      final date = await showDatePicker(
         context: context,
-        initialTime: TimeOfDay.fromDateTime(
-            isStart ? _startTime! : (_endTime ?? _startTime!)),
+        initialDate: isStart ? _startTime! : (_endTime ?? _startTime!),
+        firstDate: DateTime(2020),
+        lastDate: DateTime(2030),
       );
 
-      if (time != null) {
-        setState(() {
-          final newDateTime = DateTime(
-            date.year,
-            date.month,
-            date.day,
-            time.hour,
-            time.minute,
-          );
-          if (isStart) {
-            _startTime = newDateTime;
-            if (_endTime != null && _endTime!.isBefore(_startTime!)) {
-              _endTime = _startTime!.add(const Duration(hours: 1));
+      if (date != null) {
+        final time = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.fromDateTime(
+              isStart ? _startTime! : (_endTime ?? _startTime!)),
+        );
+
+        if (time != null) {
+          setState(() {
+            final newDateTime = DateTime(
+              date.year,
+              date.month,
+              date.day,
+              time.hour,
+              time.minute,
+            );
+            if (isStart) {
+              _startTime = newDateTime;
+              if (_endTime != null && _endTime!.isBefore(_startTime!)) {
+                _endTime = _startTime!.add(const Duration(hours: 1));
+              }
+            } else {
+              _endTime = newDateTime;
             }
-          } else {
-            _endTime = newDateTime;
-          }
-        });
-      }
-    } else if (date != null) {
-      setState(() {
-        if (isStart) {
-          _startTime = DateTime(date.year, date.month, date.day);
-        } else {
-          _endTime = DateTime(date.year, date.month, date.day, 23, 59);
+          });
         }
-      });
+      }
     }
-  }
 
   Future<void> _addReminder() async {
     final date = await showDatePicker(
@@ -304,7 +294,6 @@ void _saveEvent() {
     widget.editEvent!.priority = _selectedPriority;
     widget.editEvent!.estimatedDuration =
         _isTaskType ? _estimatedDuration : null;
-    widget.editEvent!.isAllDay = _isAllDay;
     widget.editEvent!.isCompleted = _isCompleted;
     widget.editEvent!.isImportant = _isImportant;
     widget.editEvent!.voiceNotes = _voiceNotes;
@@ -313,20 +302,19 @@ void _saveEvent() {
     dataProvider.updateEvent(widget.editEvent!);
   } else {
     final event = Event(
-      id: const Uuid().v4(),
-      title: _titleController.text,
-      classification: _selectedClassification,
-      category: _selectedCategory,
-      startTime: _startTime!,
-      endTime: _isTaskType ? null : _endTime,
-      location: _locationController.text.isEmpty
-          ? null
-          : _locationController.text,
-      notes:
-          _notesController.text.isEmpty ? null : _notesController.text,
-      priority: _selectedPriority,
-      estimatedDuration: _isTaskType ? _estimatedDuration : null,
-      isAllDay: _isAllDay,
+        id: const Uuid().v4(),
+        title: _titleController.text,
+        classification: _selectedClassification,
+        category: _selectedCategory,
+        startTime: _startTime!,
+        endTime: _isTaskType ? null : _endTime,
+        location: _locationController.text.isEmpty
+            ? null
+            : _locationController.text,
+        notes:
+            _notesController.text.isEmpty ? null : _notesController.text,
+        priority: _selectedPriority,
+        estimatedDuration: _isTaskType ? _estimatedDuration : null,
       isCompleted: _isCompleted,
       isImportant: _isImportant,
       voiceNotes: _voiceNotes,
@@ -617,22 +605,19 @@ void _saveEvent() {
             const SizedBox(height: 20),
 
             InkWell(
-              onTap: () => _selectDateTime(true),
-              borderRadius: BorderRadius.circular(16),
-              child: InputDecorator(
-                decoration: _buildInputDecoration(
-                  _isTaskType ? 'Due Date/Time' : 'Start Date/Time',
-                  Icons.event,
-                ),
-                child: Text(
-                  _isAllDay
-                      ? DateFormat('EEE, MMM d, y').format(_startTime!)
-                      : DateFormat('EEE, MMM d, y • h:mm a')
-                          .format(_startTime!),
-                  style: const TextStyle(fontSize: 16),
+                onTap: () => _selectDateTime(true),
+                borderRadius: BorderRadius.circular(16),
+                child: InputDecorator(
+                  decoration: _buildInputDecoration(
+                    _isTaskType ? 'Due Date/Time' : 'Start Date/Time',
+                    Icons.event,
+                  ),
+                  child: Text(
+                    DateFormat('EEE, MMM d, y • h:mm a').format(_startTime!),
+                    style: const TextStyle(fontSize: 16),
+                  ),
                 ),
               ),
-            ),
             const SizedBox(height: 20),
 
             if (!_isTaskType) ...[
@@ -643,40 +628,12 @@ void _saveEvent() {
                   decoration: _buildInputDecoration(
                       'End Date/Time', Icons.event_available),
                   child: Text(
-                    _isAllDay
-                        ? DateFormat('EEE, MMM d, y').format(_endTime!)
-                        : DateFormat('EEE, MMM d, y • h:mm a')
-                            .format(_endTime!),
+                    DateFormat('EEE, MMM d, y • h:mm a').format(_endTime!),
                     style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-
-              Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.getClassificationColor(_selectedClassification)
-                      .withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: AppTheme.getClassificationColor(_selectedClassification)
-                        .withOpacity(0.2),
-                    width: 1.5,
-                  ),
-                ),
-                child: SwitchListTile(
-                  title: const Text(
-                    'All-day event',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: const Text('Event lasts the entire day'),
-                  value: _isAllDay,
-                  onChanged: (value) => setState(() => _isAllDay = value),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                ),
-              ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16)
             ],
 
             if (_isTaskType) ...[

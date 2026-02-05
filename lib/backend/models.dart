@@ -12,8 +12,7 @@ class Event {
   List<VoiceNote> voiceNotes;
   bool isCompleted; // For task-like events
   String priority; // 'low', 'medium', 'high', 'critical'
-  String? estimatedDuration; // For assignments/tasks
-  bool isAllDay; // For all-day events
+  String? estimatedDuration; // For assignments
   bool isImportant; // Star/flag for emphasis
   List<DateTime> reminders;
   String? color; // Custom color override
@@ -33,7 +32,6 @@ class Event {
     this.isCompleted = false,
     this.priority = 'medium',
     this.estimatedDuration,
-    this.isAllDay = false,
     this.isImportant = false,
     this.reminders = const [],
     this.color,
@@ -46,7 +44,7 @@ class Event {
                      classification == 'exam';
 
   // Helper to check if this has a specific end time
-  bool get hasEndTime => endTime != null && !isAllDay;
+  bool get hasEndTime => endTime != null;
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -62,7 +60,6 @@ class Event {
     'isCompleted': isCompleted,
     'priority': priority,
     'estimatedDuration': estimatedDuration,
-    'isAllDay': isAllDay,
     'isImportant': isImportant,
     'reminders': reminders.map((r) => r.toIso8601String()).toList(),
     'color': color,
@@ -83,7 +80,6 @@ class Event {
     isCompleted: json['isCompleted'] ?? false,
     priority: json['priority'] ?? 'medium',
     estimatedDuration: json['estimatedDuration'],
-    isAllDay: json['isAllDay'] ?? false,
     isImportant: json['isImportant'] ?? false,
     reminders: (json['reminders'] as List?)?.map((r) => DateTime.parse(r as String)).toList() ?? [],
     color: json['color'],
@@ -105,7 +101,6 @@ class Event {
       isCompleted: false,
       priority: priority,
       estimatedDuration: estimatedDuration,
-      isAllDay: isAllDay,
       isImportant: isImportant,
       reminders: List.from(reminders),
       color: color,
