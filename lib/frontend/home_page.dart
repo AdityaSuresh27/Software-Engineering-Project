@@ -9,6 +9,9 @@ import 'calendar_page.dart';
 import 'events_page.dart';
 import '../backend/data_provider.dart';
 import '../backend/models.dart';
+import 'timetable_page.dart';
+import 'attendance_page.dart';
+import 'add_timetable_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -292,62 +295,118 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
 Widget _buildQuickActions(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Quick Actions',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _buildActionButton(
-                context,
-                'Class',
-                Icons.school_outlined,
-                AppTheme.classBlue,
-                0,
-                () => showDialog(
-                  context: context,
-                  builder: (context) => const AddEventDialog(presetClassification: 'class'),
-                ),
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        'Quick Actions',
+        style: Theme.of(context).textTheme.titleMedium,
+      ),
+      const SizedBox(height: 12),
+      // First row - Create events
+      Row(
+        children: [
+          Expanded(
+            child: _buildActionButton(
+              context,
+              'Class',
+              Icons.school_outlined,
+              AppTheme.classBlue,
+              0,
+              () => showDialog(
+                context: context,
+                builder: (context) => const AddEventDialog(presetClassification: 'class'),
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildActionButton(
-                context,
-                'Assignment',
-                Icons.assignment_outlined,
-                AppTheme.assignmentPurple,
-                50,
-                () => showDialog(
-                  context: context,
-                  builder: (context) => const AddEventDialog(presetClassification: 'assignment'),
-                ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildActionButton(
+              context,
+              'Assignment',
+              Icons.assignment_outlined,
+              AppTheme.assignmentPurple,
+              50,
+              () => showDialog(
+                context: context,
+                builder: (context) => const AddEventDialog(presetClassification: 'assignment'),
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildActionButton(
-                context,
-                'Exam',
-                Icons.quiz_outlined,
-                AppTheme.examOrange,
-                100,
-                () => showDialog(
-                  context: context,
-                  builder: (context) => const AddEventDialog(presetClassification: 'exam'),
-                ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildActionButton(
+              context,
+              'Exam',
+              Icons.quiz_outlined,
+              AppTheme.examOrange,
+              100,
+              () => showDialog(
+                context: context,
+                builder: (context) => const AddEventDialog(presetClassification: 'exam'),
               ),
             ),
-          ],
-        ),
-      ],
-    );
-  }
+          ),
+        ],
+      ),
+      const SizedBox(height: 12),
+      // Second row - Timetable & Attendance
+      Row(
+        children: [
+          Expanded(
+            child: _buildActionButton(
+              context,
+              'Timetable',
+              Icons.calendar_view_week,
+              AppTheme.meetingTeal,
+              150,
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TimetablePage(),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildActionButton(
+              context,
+              'Attendance',
+              Icons.bar_chart_outlined,
+              AppTheme.personalGreen,
+              200,
+              () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AttendancePage(),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildActionButton(
+              context,
+              'Meeting',
+              Icons.groups_outlined,
+              AppTheme.secondaryTeal,
+              250,
+              () => showDialog(
+                context: context,
+                builder: (context) => const AddEventDialog(presetClassification: 'meeting'),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+}
 
   Widget _buildActionButton(
     BuildContext context,

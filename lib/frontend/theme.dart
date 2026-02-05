@@ -175,67 +175,67 @@ class AppTheme {
     ),
     textTheme: TextTheme(
       displayLarge: GoogleFonts.inter(
-        fontSize: 36,  // was 32
+        fontSize: 36,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.5,
-        color: const Color(0xFF111827),
+        color: const Color(0xFFF1F5F9), 
       ),
       displayMedium: GoogleFonts.inter(
-        fontSize: 32,  // was 28
+        fontSize: 32,
         fontWeight: FontWeight.w600,
         letterSpacing: -0.3,
-        color: const Color(0xFF111827),
+        color: const Color(0xFFF1F5F9), 
       ),
       titleLarge: GoogleFonts.inter(
-        fontSize: 24,  // was 22
+        fontSize: 24,
         fontWeight: FontWeight.w600,
-        color: const Color(0xFF111827),
+        color: const Color(0xFFF1F5F9), 
       ),
       titleMedium: GoogleFonts.inter(
-        fontSize: 18,  // was 16
+        fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: const Color(0xFF111827),
+        color: const Color(0xFFF1F5F9), 
       ),
       titleSmall: GoogleFonts.inter(
-        fontSize: 16,  // was 14
+        fontSize: 16,
         fontWeight: FontWeight.w600,
-        color: const Color(0xFF374151),
+        color: const Color(0xFFCBD5E1), 
       ),
       bodyLarge: GoogleFonts.inter(
-        fontSize: 18,  // was 16
+        fontSize: 18,
         fontWeight: FontWeight.w400,
-        color: const Color(0xFF111827),
+        color: const Color(0xFFF1F5F9), 
         height: 1.5,
       ),
       bodyMedium: GoogleFonts.inter(
-        fontSize: 16,  // was 14
+        fontSize: 16,
         fontWeight: FontWeight.w400,
-        color: const Color(0xFF4B5563),
+        color: const Color(0xFFCBD5E1), 
         height: 1.5,
       ),
       bodySmall: GoogleFonts.inter(
-        fontSize: 14,  // was 12
+        fontSize: 14,
         fontWeight: FontWeight.w400,
-        color: const Color(0xFF6B7280),
+        color: const Color(0xFF94A3B8), 
         height: 1.4,
       ),
       labelLarge: GoogleFonts.inter(
-        fontSize: 16,  // was 14
+        fontSize: 16,
         fontWeight: FontWeight.w600,
         letterSpacing: 0.1,
-        color: const Color(0xFF374151),
+        color: const Color(0xFFCBD5E1), 
       ),
       labelMedium: GoogleFonts.inter(
-        fontSize: 14,  // was 12
+        fontSize: 14,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.5,
-        color: const Color(0xFF6B7280),
+        color: const Color(0xFF94A3B8), 
       ),
       labelSmall: GoogleFonts.inter(
-        fontSize: 13,  // was 11
+        fontSize: 13,
         fontWeight: FontWeight.w500,
         letterSpacing: 0.5,
-        color: const Color(0xFF9CA3AF),
+        color: const Color(0xFF64748B), 
       ),
     ),
     appBarTheme: const AppBarTheme(

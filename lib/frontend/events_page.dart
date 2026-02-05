@@ -18,7 +18,6 @@ class EventsPage extends StatefulWidget {
 class _EventsPageState extends State<EventsPage> {
   String _filterClassification = 'all';
   String _sortBy = 'date';
-  bool _showCompleted = false;
   
   @override
   Widget build(BuildContext context) {
@@ -31,9 +30,7 @@ class _EventsPageState extends State<EventsPage> {
           events = dataProvider.getEventsByClassification(_filterClassification);
         }
         
-        if (!_showCompleted) {
-          events = events.where((e) => !e.isCompleted).toList();
-        }
+        events = events.where((e) => !e.isCompleted).toList();
         
         // Sort
         events.sort((a, b) {
@@ -116,6 +113,7 @@ class _EventsPageState extends State<EventsPage> {
       },
     );
   }
+
 
   int _getPriorityValue(String priority) {
     switch (priority.toLowerCase()) {

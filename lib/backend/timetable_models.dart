@@ -113,14 +113,14 @@ class TimetableEntry {
 
 class AttendanceRecord {
   final String id;
-  final String timetableEntryId;
+  final String courseName; // Changed from timetableEntryId to courseName
   final DateTime date;
   AttendanceStatus status;
   String? notes;
 
   AttendanceRecord({
     required this.id,
-    required this.timetableEntryId,
+    required this.courseName,
     required this.date,
     required this.status,
     this.notes,
@@ -128,7 +128,7 @@ class AttendanceRecord {
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'timetableEntryId': timetableEntryId,
+        'courseName': courseName,
         'date': date.toIso8601String(),
         'status': status.toString().split('.').last,
         'notes': notes,
@@ -137,7 +137,7 @@ class AttendanceRecord {
   factory AttendanceRecord.fromJson(Map<String, dynamic> json) {
     return AttendanceRecord(
       id: json['id'],
-      timetableEntryId: json['timetableEntryId'],
+      courseName: json['courseName'],
       date: DateTime.parse(json['date']),
       status: AttendanceStatus.values.firstWhere(
         (e) => e.toString().split('.').last == json['status'],

@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
 import '../backend/data_provider.dart';
 import '../backend/timetable_models.dart';
 import 'theme.dart';
+import 'class_attendance_details_page.dart';
 
 class AttendancePage extends StatefulWidget {
   const AttendancePage({super.key});
@@ -15,150 +15,134 @@ class AttendancePage extends StatefulWidget {
 }
 
 class _AttendancePageState extends State<AttendancePage> {
-  DateTime _selectedDate = DateTime.now();
-
-  Future<void> _selectDate() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime.now().subtract(const Duration(days: 365)),
-      lastDate: DateTime.now().add(const Duration(days: 30)),
-    );
-
-    if (picked != null) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(
       builder: (context, dataProvider, child) {
-        final classes = dataProvider.getTimetableForDate(_selectedDate);
         final allStats = dataProvider.getAllAttendanceStats();
+        
+        // Get unique course names from class events
+        final courseNames = <String>{};
+        for (var event in dataProvider.events) {
+          if (event.classification == 'class') {
+            courseNames.add(event.title);
+          }
+        }
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Attendance'),
+            title: const Text('Attendance Tracker'),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.calendar_today),
-                onPressed: _selectDate,
+              PopupMenuButton<String>(
+                onSelected: (value) {
+                  if (value == 'reset') {
+                    _showResetConfirmation(context, dataProvider);
+                  }
+                },
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 'reset',
+                    child: Row(
+                      children: [
+                        Icon(Icons.restart_alt, color: Colors.red),
+                        SizedBox(width: 8),
+                        Text('Reset All Attendance', style: TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          body: Column(
-            children: [
-              // Date selector card
-              Card(
-                margin: const EdgeInsets.all(16),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          body: courseNames.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            DateFormat('EEEE').format(_selectedDate),
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            DateFormat('MMMM d, y').format(_selectedDate),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+                      Icon(
+                        Icons.event_busy_outlined,
+                        size: 64,
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
                       ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.chevron_left),
-                            onPressed: () {
-                              setState(() {
-                                _selectedDate = _selectedDate.subtract(const Duration(days: 1));
-                              });
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.today),
-                            onPressed: () {
-                              setState(() {
-                                _selectedDate = DateTime.now();
-                              });
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.chevron_right),
-                            onPressed: () {
-                              setState(() {
-                                _selectedDate = _selectedDate.add(const Duration(days: 1));
-                              });
-                            },
-                          ),
-                        ],
+                      const SizedBox(height: 16),
+                      Text(
+                        'No classes found',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Add classes to your timetable to track attendance',
+                        style: Theme.of(context).textTheme.bodySmall,
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
-                ),
-              ),
-
-              // Overall stats
-              if (allStats.isNotEmpty)
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppTheme.primaryBlue,
-                        AppTheme.primaryBlue.withOpacity(0.8),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: _buildOverallStats(allStats),
-                ),
-
-              const SizedBox(height: 16),
-
-              // Classes for selected date
-              Expanded(
-                child: classes.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.event_busy_outlined,
-                              size: 64,
-                              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              'No classes on this day',
-                              style: Theme.of(context).textTheme.titleMedium,
+                )
+              : Column(
+                  children: [
+                    // Overall Stats Card
+                    if (allStats.isNotEmpty)
+                      Container(
+                        margin: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              AppTheme.primaryBlue,
+                              AppTheme.primaryBlue.withOpacity(0.8),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.primaryBlue.withOpacity(0.3),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: classes.length,
+                        child: _buildOverallStats(allStats),
+                      ),
+
+                    // Subject List Header
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Classes (${courseNames.length})',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Classes List
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        itemCount: courseNames.length,
                         itemBuilder: (context, index) {
-                          return _buildAttendanceCard(
+                          final courseName = courseNames.elementAt(index);
+                          final stats = allStats[courseName];
+                          
+                          // Get first class event for this course to extract metadata
+                          final classEvent = dataProvider.events.firstWhere(
+                            (e) => e.classification == 'class' && e.title == courseName,
+                          );
+                          
+                          return _buildCourseCard(
                             context,
-                            classes[index],
+                            courseName,
+                            stats,
+                            classEvent.color,
                             dataProvider,
                           );
                         },
                       ),
-              ),
-            ],
-          ),
+                    ),
+                  ],
+                ),
         );
       },
     );
@@ -167,13 +151,16 @@ class _AttendancePageState extends State<AttendancePage> {
   Widget _buildOverallStats(Map<String, AttendanceStats> allStats) {
     int totalClasses = 0;
     int totalPresent = 0;
+    int totalLate = 0;
 
     for (var stats in allStats.values) {
       totalClasses += stats.totalClasses;
       totalPresent += stats.present;
+      totalLate += stats.late;
     }
 
     final percentage = totalClasses > 0 ? (totalPresent / totalClasses * 100) : 0.0;
+    final withLatePercentage = totalClasses > 0 ? ((totalPresent + totalLate) / totalClasses * 100) : 0.0;
 
     return Column(
       children: [
@@ -188,13 +175,26 @@ class _AttendancePageState extends State<AttendancePage> {
                 color: Colors.white,
               ),
             ),
-            Text(
-              '${percentage.toStringAsFixed(1)}%',
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '${percentage.toStringAsFixed(1)}%',
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+                if (totalLate > 0)
+                  Text(
+                    '${withLatePercentage.toStringAsFixed(1)}% with late',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white.withOpacity(0.8),
+                    ),
+                  ),
+              ],
             ),
           ],
         ),
@@ -219,174 +219,215 @@ class _AttendancePageState extends State<AttendancePage> {
                 color: Colors.white.withOpacity(0.9),
               ),
             ),
+            Text(
+              '${allStats.length} subjects',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white.withOpacity(0.9),
+              ),
+            ),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildAttendanceCard(
+  Widget _buildCourseCard(
     BuildContext context,
-    TimetableEntry entry,
+    String courseName,
+    AttendanceStats? stats,
+    String? colorHex,
     DataProvider dataProvider,
   ) {
-    final color = entry.color != null
-        ? Color(int.parse(entry.color!.replaceFirst('#', '0xFF')))
+    final color = colorHex != null
+        ? Color(int.parse(colorHex.replaceFirst('#', '0xFF')))
         : AppTheme.classBlue;
 
-    final attendance = dataProvider.getAttendanceForDate(entry.id, _selectedDate);
-    final stats = dataProvider.getAttendanceStats(entry.id);
+    final hasStats = stats != null && stats.totalClasses > 0;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
+      elevation: 2,
+      shadowColor: color.withOpacity(0.2),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ClassAttendanceDetailsPage(
+                courseName: courseName,
+                color: color,
+              ),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              // Color indicator
+              Container(
+                width: 5,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+              const SizedBox(width: 16),
+              
+              // Course info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      courseName,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    if (hasStats) ...[
+                      Row(
+                        children: [
+                          _buildStatChip(
+                            'P: ${stats.present}',
+                            AppTheme.successGreen,
+                          ),
+                          const SizedBox(width: 8),
+                          _buildStatChip(
+                            'A: ${stats.absent}',
+                            AppTheme.errorRed,
+                          ),
+                          if (stats.late > 0) ...[
+                            const SizedBox(width: 8),
+                            _buildStatChip(
+                              'L: ${stats.late}',
+                              AppTheme.warningAmber,
+                            ),
+                          ],
+                          if (stats.excused > 0) ...[
+                            const SizedBox(width: 8),
+                            _buildStatChip(
+                              'E: ${stats.excused}',
+                              AppTheme.secondaryTeal,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ] else
+                      Text(
+                        'No attendance marked yet',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                  ],
+                ),
+              ),
+              
+              // Percentage badge
+              if (hasStats)
                 Container(
-                  width: 4,
-                  height: 48,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(2),
+                    color: _getPercentageColor(stats.attendancePercentage).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _getPercentageColor(stats.attendancePercentage),
+                      width: 2,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        entry.courseName,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
+                        '${stats.attendancePercentage.toStringAsFixed(0)}%',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: _getPercentageColor(stats.attendancePercentage),
                         ),
                       ),
-                      const SizedBox(height: 4),
                       Text(
-                        '${entry.startTime.format(context)} - ${entry.endTime.format(context)}',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: color,
-                          fontWeight: FontWeight.w600,
+                        '${stats.totalClasses} total',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: _getPercentageColor(stats.attendancePercentage),
                         ),
                       ),
                     ],
                   ),
                 ),
-                if (stats.totalClasses > 0)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: color.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      '${stats.attendancePercentage.toStringAsFixed(0)}%',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: color,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: AttendanceStatus.values.map((status) {
-                final isSelected = attendance?.status == status;
-                final statusColor = _getAttendanceColor(status);
-
-                return ChoiceChip(
-                  label: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        _getAttendanceIcon(status),
-                        size: 16,
-                        color: isSelected ? Colors.white : statusColor,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        status.toString().split('.').last.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: isSelected ? Colors.white : statusColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    if (selected) {
-                      _markAttendance(dataProvider, entry.id, status);
-                    }
-                  },
-                  backgroundColor: statusColor.withOpacity(0.1),
-                  selectedColor: statusColor,
-                  side: BorderSide(
-                    color: isSelected ? statusColor : statusColor.withOpacity(0.3),
-                    width: 1.5,
-                  ),
-                  showCheckmark: false,
-                );
-              }).toList(),
-            ),
-          ],
+              
+              const SizedBox(width: 8),
+              Icon(
+                Icons.chevron_right,
+                color: color.withOpacity(0.5),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void _markAttendance(DataProvider dataProvider, String timetableEntryId, AttendanceStatus status) {
-    final record = AttendanceRecord(
-      id: const Uuid().v4(),
-      timetableEntryId: timetableEntryId,
-      date: _selectedDate,
-      status: status,
-    );
-
-    dataProvider.markAttendance(record);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Marked as ${status.toString().split('.').last}'),
-        backgroundColor: _getAttendanceColor(status),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 1),
+  Widget _buildStatChip(String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
       ),
     );
   }
 
-  Color _getAttendanceColor(AttendanceStatus status) {
-    switch (status) {
-      case AttendanceStatus.present:
-        return AppTheme.successGreen;
-      case AttendanceStatus.absent:
-        return AppTheme.errorRed;
-      case AttendanceStatus.late:
-        return AppTheme.warningAmber;
-      case AttendanceStatus.excused:
-        return AppTheme.secondaryTeal;
-    }
+  Color _getPercentageColor(double percentage) {
+    if (percentage >= 75) return AppTheme.successGreen;
+    if (percentage >= 60) return AppTheme.warningAmber;
+    return AppTheme.errorRed;
   }
 
-  IconData _getAttendanceIcon(AttendanceStatus status) {
-    switch (status) {
-      case AttendanceStatus.present:
-        return Icons.check_circle;
-      case AttendanceStatus.absent:
-        return Icons.cancel;
-      case AttendanceStatus.late:
-        return Icons.access_time;
-      case AttendanceStatus.excused:
-        return Icons.event_busy;
-    }
+  void _showResetConfirmation(BuildContext context, DataProvider dataProvider) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Reset All Attendance?'),
+        content: const Text(
+          'This will permanently delete all attendance records. This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              await dataProvider.resetAttendance();
+              if (context.mounted) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('All attendance records cleared'),
+                    backgroundColor: AppTheme.successGreen,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
+            style: FilledButton.styleFrom(backgroundColor: AppTheme.errorRed),
+            child: const Text('Reset All'),
+          ),
+        ],
+      ),
+    );
   }
 }

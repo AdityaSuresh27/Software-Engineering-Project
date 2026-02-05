@@ -55,6 +55,32 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                 },
                 tooltip: 'View Attendance',
               ),
+              PopupMenuButton<String>(
+                tooltip: 'Options',
+                icon: const Icon(Icons.more_vert),
+                onSelected: (value) {
+                  if (value == 'reset') {
+                    _showResetConfirmation(context, dataProvider);
+                  }
+                },
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 'reset',
+                    child: Row(
+                      children: [
+                        Icon(Icons.restart_alt, color: Colors.red, size: 20),
+                        SizedBox(width: 12),
+                        Flexible(
+                          child: Text(
+                            'Reset Timetable & Attendance',
+                            style: TextStyle(color: Colors.red, fontSize: 14),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
             bottom: TabBar(
               controller: _tabController,
@@ -136,10 +162,9 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
     final endTime = entry.endTime.format(context);
     final duration = _calculateDuration(entry.startTime, entry.endTime);
 
-    // Get attendance for today
     final today = DateTime.now();
     final thisWeekDay = _getNextDateForDay(today, dayOfWeek);
-    final attendance = dataProvider.getAttendanceForDate(entry.id, thisWeekDay);
+    final attendance = dataProvider.getAttendanceForDate(entry.courseName, thisWeekDay);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -406,4 +431,43 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
         return Icons.event_busy;
     }
   }
+
+void _showResetConfirmation(BuildContext context, DataProvider dataProvider) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Reset Timetable & Attendance?'),
+      content: const Text(
+        'This will permanently delete:\n'
+        '• All timetable entries\n'
+        '• All class events (both auto-generated and manual)\n'
+        '• All attendance records\n\n'
+        'This action cannot be undone.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: () async {
+            await dataProvider.resetTimetableAndAttendance();
+            if (context.mounted) {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Timetable and attendance reset successfully'),
+                  backgroundColor: AppTheme.successGreen,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          },
+          style: FilledButton.styleFrom(backgroundColor: AppTheme.errorRed),
+          child: const Text('Reset Everything'),
+        ),
+      ],
+    ),
+  );
+}
 }
