@@ -153,6 +153,7 @@ enum AttendanceStatus {
   absent,
   late,
   excused,
+  cancelled
 }
 
 class AttendanceStats {

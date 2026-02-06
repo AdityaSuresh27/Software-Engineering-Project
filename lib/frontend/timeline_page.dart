@@ -6,6 +6,7 @@ import 'theme.dart';
 import 'add_event_dialog.dart';
 import '../backend/data_provider.dart';
 import '../backend/models.dart';
+import 'event_action_dialog.dart';
 
 class TimelinePage extends StatefulWidget {
   const TimelinePage({super.key});
@@ -223,7 +224,7 @@ class _TimelinePageState extends State<TimelinePage> {
       onTap: () {
         showDialog(
           context: context,
-          builder: (context) => AddEventDialog(editEvent: event),
+          builder: (context) => EventActionDialog(event: event),
         );
       },
       borderRadius: BorderRadius.circular(12),

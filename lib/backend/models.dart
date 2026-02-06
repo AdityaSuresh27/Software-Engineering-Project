@@ -10,7 +10,8 @@ class Event {
   String? notes;
   List<String> attachments;
   List<VoiceNote> voiceNotes;
-  bool isCompleted; // For task-like events
+  bool isCompleted;
+  String? completionColor;
   String priority; // 'low', 'medium', 'high', 'critical'
   String? estimatedDuration; // For assignments
   bool isImportant; // Star/flag for emphasis
@@ -30,6 +31,7 @@ class Event {
     this.attachments = const [],
     this.voiceNotes = const [],
     this.isCompleted = false,
+    this.completionColor,
     this.priority = 'medium',
     this.estimatedDuration,
     this.isImportant = false,
@@ -58,6 +60,7 @@ class Event {
     'attachments': attachments,
     'voiceNotes': voiceNotes.map((v) => v.toJson()).toList(),
     'isCompleted': isCompleted,
+    'completionColor': completionColor,
     'priority': priority,
     'estimatedDuration': estimatedDuration,
     'isImportant': isImportant,
@@ -78,6 +81,7 @@ class Event {
     attachments: List<String>.from(json['attachments'] ?? []),
     voiceNotes: (json['voiceNotes'] as List?)?.map((v) => VoiceNote.fromJson(v)).toList() ?? [],
     isCompleted: json['isCompleted'] ?? false,
+    completionColor: json['completionColor'],
     priority: json['priority'] ?? 'medium',
     estimatedDuration: json['estimatedDuration'],
     isImportant: json['isImportant'] ?? false,
@@ -99,6 +103,7 @@ class Event {
       attachments: List.from(attachments),
       voiceNotes: List.from(voiceNotes),
       isCompleted: false,
+      completionColor: null,
       priority: priority,
       estimatedDuration: estimatedDuration,
       isImportant: isImportant,

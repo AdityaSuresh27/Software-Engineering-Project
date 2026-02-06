@@ -7,6 +7,7 @@ import 'theme.dart';
 import 'add_event_dialog.dart';
 import '../backend/data_provider.dart';
 import '../backend/models.dart';
+import 'event_action_dialog.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({super.key});
@@ -204,7 +205,7 @@ class _EventsPageState extends State<EventsPage> {
           onTap: () {
             showDialog(
               context: context,
-              builder: (context) => AddEventDialog(editEvent: event),
+              builder: (context) => EventActionDialog(event: event),
             );
           },
           borderRadius: BorderRadius.circular(12),

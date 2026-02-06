@@ -907,6 +907,8 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
         return AppTheme.warningAmber;
       case AttendanceStatus.excused:
         return AppTheme.secondaryTeal;
+      case AttendanceStatus.cancelled:
+        return AppTheme.otherGray;
     }
   }
 
@@ -920,6 +922,8 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
         return Icons.access_time_rounded;
       case AttendanceStatus.excused:
         return Icons.event_busy_rounded;
+      case AttendanceStatus.cancelled:
+        return Icons.block_rounded;
     }
   }
 

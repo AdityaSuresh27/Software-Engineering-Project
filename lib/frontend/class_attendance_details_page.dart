@@ -476,31 +476,34 @@ class ClassAttendanceDetailsPage extends StatelessWidget {
   }
 
   Color _getAttendanceColor(AttendanceStatus status) {
-    switch (status) {
-      case AttendanceStatus.present:
-        return AppTheme.successGreen;
-      case AttendanceStatus.absent:
-        return AppTheme.errorRed;
-      case AttendanceStatus.late:
-        return AppTheme.warningAmber;
-      case AttendanceStatus.excused:
-        return AppTheme.secondaryTeal;
+      switch (status) {
+        case AttendanceStatus.present:
+          return AppTheme.successGreen;
+        case AttendanceStatus.absent:
+          return AppTheme.errorRed;
+        case AttendanceStatus.late:
+          return AppTheme.warningAmber;
+        case AttendanceStatus.excused:
+          return AppTheme.secondaryTeal;
+        case AttendanceStatus.cancelled:
+          return AppTheme.otherGray;
+      }
     }
-  }
 
-  IconData _getAttendanceIcon(AttendanceStatus status) {
-    switch (status) {
-      case AttendanceStatus.present:
-        return Icons.check_circle;
-      case AttendanceStatus.absent:
-        return Icons.cancel;
-      case AttendanceStatus.late:
-        return Icons.access_time;
-      case AttendanceStatus.excused:
-        return Icons.event_busy;
+    IconData _getAttendanceIcon(AttendanceStatus status) {
+      switch (status) {
+        case AttendanceStatus.present:
+          return Icons.check_circle;
+        case AttendanceStatus.absent:
+          return Icons.cancel;
+        case AttendanceStatus.late:
+          return Icons.access_time;
+        case AttendanceStatus.excused:
+          return Icons.event_busy;
+        case AttendanceStatus.cancelled:
+          return Icons.block;
+      }
     }
-  }
-
   void _showClearConfirmation(BuildContext context, DataProvider dataProvider) {
     showDialog(
       context: context,

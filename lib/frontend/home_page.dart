@@ -12,6 +12,7 @@ import '../backend/models.dart';
 import 'timetable_page.dart';
 import 'attendance_page.dart';
 import 'add_timetable_dialog.dart';
+import 'event_action_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -588,7 +589,7 @@ Widget _buildQuickActions(BuildContext context) {
           onTap: () {
             showDialog(
               context: context,
-              builder: (context) => AddEventDialog(editEvent: event),
+              builder: (context) => EventActionDialog(event: event),
             );
           },
           borderRadius: BorderRadius.circular(12),

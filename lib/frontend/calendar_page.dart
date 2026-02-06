@@ -7,6 +7,7 @@ import 'theme.dart';
 import 'add_event_dialog.dart';
 import '../backend/data_provider.dart';
 import '../backend/models.dart';
+import 'event_action_dialog.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -163,7 +164,11 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildEventCard(BuildContext context, Event event, DataProvider dataProvider) {
-    final color = AppTheme.getClassificationColor(event.classification);
+    final color = event.completionColor != null
+        ? Color(int.parse(event.completionColor!.replaceFirst('#', '0xFF')))
+        : (event.isCompleted 
+            ? AppTheme.successGreen 
+            : AppTheme.getClassificationColor(event.classification));
     
    String timeText;
     if (event.hasEndTime) {
@@ -176,9 +181,10 @@ class _CalendarPageState extends State<CalendarPage> {
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: () {
+          // Show action dialog instead of edit dialog
           showDialog(
             context: context,
-            builder: (context) => AddEventDialog(editEvent: event),
+            builder: (context) => EventActionDialog(event: event),
           );
         },
         borderRadius: BorderRadius.circular(12),
@@ -197,7 +203,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   children: [
                     Center(
                       child: Icon(
-                        event.isCompleted
+                        event.isCompleted || event.completionColor != null
                             ? Icons.check_circle
                             : AppTheme.getClassificationIcon(event.classification),
                         color: color,

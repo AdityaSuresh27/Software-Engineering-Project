@@ -637,6 +637,7 @@ AttendanceStats getAttendanceStats(String courseName) {
   int absent = 0;
   int late = 0;
   int excused = 0;
+  int cancelled = 0; // Classes that were cancelled
   
   for (var record in records) {
     switch (record.status) {
@@ -652,11 +653,17 @@ AttendanceStats getAttendanceStats(String courseName) {
       case AttendanceStatus.excused:
         excused++;
         break;
+      case AttendanceStatus.cancelled:
+        cancelled++;
+        break;
     }
   }
   
+  // Don't count cancelled classes in total
+  final totalClasses = records.length - cancelled;
+  
   return AttendanceStats(
-    totalClasses: records.length,
+    totalClasses: totalClasses,
     present: present,
     absent: absent,
     late: late,
