@@ -142,6 +142,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             icon: const Icon(Icons.add),
             label: const Text('New Event'),
             elevation: 4,
+            heroTag: 'home_fab',
           ),
         );
       },
@@ -295,119 +296,119 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-Widget _buildQuickActions(BuildContext context) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        'Quick Actions',
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
-      const SizedBox(height: 12),
-      // First row - Create events
-      Row(
-        children: [
-          Expanded(
-            child: _buildActionButton(
-              context,
-              'Class',
-              Icons.school_outlined,
-              AppTheme.classBlue,
-              0,
-              () => showDialog(
-                context: context,
-                builder: (context) => const AddEventDialog(presetClassification: 'class'),
+  Widget _buildQuickActions(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Quick Actions',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 12),
+        // First row - Create events
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionButton(
+                context,
+                'Class',
+                Icons.school_outlined,
+                AppTheme.classBlue,
+                0,
+                () => showDialog(
+                  context: context,
+                  builder: (context) => const AddEventDialog(presetClassification: 'class'),
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildActionButton(
-              context,
-              'Assignment',
-              Icons.assignment_outlined,
-              AppTheme.assignmentPurple,
-              50,
-              () => showDialog(
-                context: context,
-                builder: (context) => const AddEventDialog(presetClassification: 'assignment'),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildActionButton(
+                context,
+                'Assignment',
+                Icons.assignment_outlined,
+                AppTheme.assignmentPurple,
+                50,
+                () => showDialog(
+                  context: context,
+                  builder: (context) => const AddEventDialog(presetClassification: 'assignment'),
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildActionButton(
-              context,
-              'Exam',
-              Icons.quiz_outlined,
-              AppTheme.examOrange,
-              100,
-              () => showDialog(
-                context: context,
-                builder: (context) => const AddEventDialog(presetClassification: 'exam'),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildActionButton(
+                context,
+                'Exam',
+                Icons.quiz_outlined,
+                AppTheme.examOrange,
+                100,
+                () => showDialog(
+                  context: context,
+                  builder: (context) => const AddEventDialog(presetClassification: 'exam'),
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 12),
-      // Second row - Timetable & Attendance
-      Row(
-        children: [
-          Expanded(
-            child: _buildActionButton(
-              context,
-              'Timetable',
-              Icons.calendar_view_week,
-              AppTheme.meetingTeal,
-              150,
-              () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const TimetablePage(),
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildActionButton(
-              context,
-              'Attendance',
-              Icons.bar_chart_outlined,
-              AppTheme.personalGreen,
-              200,
-              () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AttendancePage(),
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildActionButton(
-              context,
-              'Meeting',
-              Icons.groups_outlined,
-              AppTheme.secondaryTeal,
-              250,
-              () => showDialog(
-                context: context,
-                builder: (context) => const AddEventDialog(presetClassification: 'meeting'),
+          ],
+        ),
+        const SizedBox(height: 12),
+        // Second row - Timetable & Attendance
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionButton(
+                context,
+                'Timetable',
+                Icons.calendar_view_week,
+                AppTheme.meetingTeal,
+                150,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TimetablePage(),
+                    ),
+                  );
+                },
               ),
             ),
-          ),
-        ],
-      ),
-    ],
-  );
-}
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildActionButton(
+                context,
+                'Attendance',
+                Icons.bar_chart_outlined,
+                AppTheme.personalGreen,
+                200,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AttendancePage(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildActionButton(
+                context,
+                'Meeting',
+                Icons.groups_outlined,
+                AppTheme.secondaryTeal,
+                250,
+                () => showDialog(
+                  context: context,
+                  builder: (context) => const AddEventDialog(presetClassification: 'meeting'),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 
   Widget _buildActionButton(
     BuildContext context,
@@ -467,12 +468,23 @@ Widget _buildQuickActions(BuildContext context) {
   }
 
   Widget _buildUpcomingEvents(BuildContext context, DataProvider dataProvider, DateTime now) {
-    // Get all upcoming events for today, sorted by time
+    // Get today's incomplete/unmarked events (max 3)
+    final today = DateTime(now.year, now.month, now.day);
+    
     final todayEvents = dataProvider.getEventsForDay(now);
     final upcomingEvents = todayEvents.where((event) {
-      return event.startTime.isAfter(now);
+      // Check if event is in the future
+      final isUpcoming = event.startTime.isAfter(now);
+      
+      // Check if event is incomplete/unmarked
+      final isIncomplete = !event.isCompleted && event.completionColor == null;
+      
+      return isUpcoming && isIncomplete;
     }).toList()
       ..sort((a, b) => a.startTime.compareTo(b.startTime));
+
+    // Take only first 3 events
+    final displayEvents = upcomingEvents.take(3).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -499,10 +511,10 @@ Widget _buildQuickActions(BuildContext context) {
           ],
         ),
         const SizedBox(height: 12),
-        upcomingEvents.isEmpty
+        displayEvents.isEmpty
             ? _buildEmptyUpcoming(context)
             : Column(
-                children: upcomingEvents.take(3).toList().asMap().entries.map((entry) {
+                children: displayEvents.asMap().entries.map((entry) {
                   return _buildEventCard(context, entry.value, entry.key);
                 }).toList(),
               ),
@@ -554,7 +566,9 @@ Widget _buildQuickActions(BuildContext context) {
   }
 
   Widget _buildEventCard(BuildContext context, Event event, int index) {
-    final color = AppTheme.getClassificationColor(event.classification);
+    final color = event.completionColor != null
+        ? Color(int.parse(event.completionColor!.replaceFirst('#', '0xFF')))
+        : AppTheme.getClassificationColor(event.classification);
     final now = DateTime.now();
     final timeUntil = event.startTime.difference(now);
     
@@ -598,7 +612,7 @@ Widget _buildQuickActions(BuildContext context) {
             child: Row(
               children: [
                 Hero(
-                  tag: 'event_${event.id}',
+                  tag: 'event_${event.id}_home',
                   child: Container(
                     width: 52,
                     height: 52,
@@ -677,9 +691,7 @@ Widget _buildQuickActions(BuildContext context) {
         Row(
           children: List.generate(3, (index) {
             final date = now.add(Duration(days: index));
-            final counts = dataProvider.getCountsForDay(date);
-            final hasItems = (counts['events'] ?? 0) > 0 || (counts['tasks'] ?? 0) > 0;
-            final isToday = index == 0;
+            final dayEvents = dataProvider.getEventsForDay(date);
             
             return Expanded(
               child: TweenAnimationBuilder<double>(
@@ -697,88 +709,76 @@ Widget _buildQuickActions(BuildContext context) {
                 },
                 child: Padding(
                   padding: EdgeInsets.only(right: index < 2 ? 12 : 0),
-                  child: Card(
-                    elevation: isToday ? 3 : 1,
-                    color: isToday
-                        ? Theme.of(context).colorScheme.primaryContainer
-                        : null,
-                    shadowColor: isToday 
-                        ? Theme.of(context).colorScheme.primary.withOpacity(0.3)
-                        : null,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (context, animation, secondaryAnimation) => const CalendarPage(),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: child,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(12),
+                  child: InkWell(
+                    onTap: () {
+                      // Navigate to calendar page with the selected date
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CalendarPage(),
+                          settings: RouteSettings(arguments: date),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Card(
+                      elevation: 2,
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                         child: Column(
                           children: [
+                            // Day name - FIXED: Ensure it's always visible
                             Text(
                               DateFormat('EEE').format(date),
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: isToday
-                                    ? Theme.of(context).colorScheme.onPrimaryContainer
-                                    : null,
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            // Date number - FIXED: Make it larger and always visible
+                            Container(
+                              width: 40,
+                              height: 40,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: index == 0
+                                    ? AppTheme.primaryBlue
+                                    : Colors.transparent,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                DateFormat('d').format(date),
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                  color: index == 0 ? Colors.white : Colors.black87,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 8),
-                            Text(
-                              DateFormat('d').format(date),
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.w700,
-                                height: 1,
-                                color: isToday
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).textTheme.displayMedium?.color,
+                            // Event count
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
                               ),
-                            ),
-                            const SizedBox(height: 12),
-                            SizedBox(
-                              height: 20,
-                              child: hasItems
-                                  ? Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        if ((counts['events'] ?? 0) > 0) ...[
-                                          Container(
-                                            width: 7,
-                                            height: 7,
-                                            decoration: BoxDecoration(
-                                              color: AppTheme.classBlue,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 4),
-                                        ],
-                                        if ((counts['tasks'] ?? 0) > 0)
-                                          Container(
-                                            width: 7,
-                                            height: 7,
-                                            decoration: BoxDecoration(
-                                              color: AppTheme.assignmentPurple,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                      ],
-                                    )
-                                  : Icon(
-                                      Icons.check_circle_outline,
-                                      size: 16,
-                                      color: AppTheme.successGreen.withOpacity(0.4),
-                                    ),
+                              decoration: BoxDecoration(
+                                color: dayEvents.isEmpty
+                                    ? Colors.grey[200]
+                                    : AppTheme.primaryBlue.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '${dayEvents.length} ${dayEvents.length == 1 ? 'event' : 'events'}',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: dayEvents.isEmpty
+                                      ? Colors.grey[600]
+                                      : AppTheme.primaryBlue,
+                                ),
+                              ),
                             ),
                           ],
                         ),

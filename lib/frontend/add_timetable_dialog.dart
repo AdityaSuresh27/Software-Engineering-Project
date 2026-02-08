@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../backend/data_provider.dart';
 import '../backend/timetable_models.dart';
 import 'theme.dart';
+import 'package:intl/intl.dart';
 
 class AddTimetableDialog extends StatefulWidget {
   final TimetableEntry? editEntry;
@@ -28,6 +29,9 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
   String? _selectedCategory;
   Color _selectedColor = AppTheme.classBlue;
 
+  DateTime? _semesterStart;
+  DateTime? _semesterEnd;
+
   final List<int> _durationOptions = [30, 45, 50, 60, 75, 90, 120, 180]; // in minutes
 
   @override
@@ -42,6 +46,8 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
       _selectedDays = List.from(widget.editEntry!.daysOfWeek);
       _startTime = widget.editEntry!.startTime;
       _selectedCategory = widget.editEntry!.category;
+      _semesterStart = widget.editEntry!.semesterStart;
+      _semesterEnd = widget.editEntry!.semesterEnd;
       
       if (widget.editEntry!.color != null) {
         _selectedColor = Color(int.parse(widget.editEntry!.color!.replaceFirst('#', '0xFF')));
@@ -51,6 +57,10 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
       final startMinutes = widget.editEntry!.startTime.hour * 60 + widget.editEntry!.startTime.minute;
       final endMinutes = widget.editEntry!.endTime.hour * 60 + widget.editEntry!.endTime.minute;
       _periodDurationMinutes = endMinutes - startMinutes;
+    } else {
+      // Set defaults for new entries
+      _semesterStart = DateTime.now();
+      _semesterEnd = DateTime.now().add(const Duration(days: 180)); // 6 months
     }
   }
 
@@ -99,19 +109,10 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
       final endTime = _calculateEndTime();
 
       if (widget.editEntry != null) {
-        final updated = widget.editEntry!.copyWith(
-          courseName: _courseNameController.text,
-          courseCode: _courseCodeController.text.isEmpty ? null : _courseCodeController.text,
-          instructor: _instructorController.text.isEmpty ? null : _instructorController.text,
-          room: _roomController.text.isEmpty ? null : _roomController.text,
-          daysOfWeek: _selectedDays,
-          startTime: _startTime,
-          endTime: endTime,
-          category: _selectedCategory,
-          color: '#${_selectedColor.value.toRadixString(16).substring(2)}',
-        );
-        dataProvider.updateTimetableEntry(updated);
+        // Show edit options dialog
+        _showEditOptionsDialog(context, dataProvider, endTime);
       } else {
+        // Create new entry
         final entry = TimetableEntry(
           id: const Uuid().v4(),
           courseName: _courseNameController.text,
@@ -123,20 +124,91 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
           endTime: endTime,
           category: _selectedCategory,
           color: '#${_selectedColor.value.toRadixString(16).substring(2)}',
+          semesterStart: _semesterStart,
+          semesterEnd: _semesterEnd,
         );
         dataProvider.addTimetableEntry(entry);
+        
+        Navigator.pop(context);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Class added to timetable'),
+            backgroundColor: AppTheme.successGreen,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
-
-      Navigator.pop(context);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(widget.editEntry != null ? 'Class updated' : 'Class added to timetable'),
-          backgroundColor: AppTheme.successGreen,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
     }
+  }
+
+  void _showEditOptionsDialog(BuildContext context, DataProvider dataProvider, TimeOfDay endTime) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Edit Options'),
+        content: const Text('Do you want to apply changes to all instances of this class or just this specific occurrence?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          OutlinedButton(
+            onPressed: () {
+              // Edit single instance - convert to manual event
+              Navigator.pop(context); // Close options dialog
+              Navigator.pop(context); // Close edit dialog
+              
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('This feature edits the entire series. Use the calendar to edit single classes.'),
+                  backgroundColor: AppTheme.warningAmber,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+            child: const Text('This Class Only'),
+          ),
+          FilledButton(
+            onPressed: () {
+              // Update all instances
+              final updated = TimetableEntry(
+                id: widget.editEntry!.id,
+                courseName: _courseNameController.text,
+                courseCode: _courseCodeController.text.isEmpty ? null : _courseCodeController.text,
+                instructor: _instructorController.text.isEmpty ? null : _instructorController.text,
+                room: _roomController.text.isEmpty ? null : _roomController.text,
+                daysOfWeek: _selectedDays,
+                startTime: _startTime,
+                endTime: endTime,
+                category: _selectedCategory,
+                color: '#${_selectedColor.value.toRadixString(16).substring(2)}',
+                semesterStart: _semesterStart,
+                semesterEnd: _semesterEnd,
+                excludedDates: widget.editEntry!.excludedDates,
+              );
+              dataProvider.updateTimetableEntry(updated);
+              
+              Navigator.pop(context); // Close options dialog
+              Navigator.pop(context); // Close edit dialog
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('All classes in series updated'),
+                  backgroundColor: AppTheme.successGreen,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: _selectedColor,
+            ),
+            child: const Text('All Classes'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -356,6 +428,102 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
                         ],
                         onChanged: (value) => setState(() => _selectedCategory = value),
                       ),
+                      const SizedBox(height: 20),
+
+                      // Date Range
+                      Text(
+                        'Class Duration',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      
+                      Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () async {
+                                final picked = await showDatePicker(
+                                  context: context,
+                                  initialDate: _semesterStart ?? DateTime.now(),
+                                  firstDate: DateTime(2020),
+                                  lastDate: DateTime(2030),
+                                );
+                                if (picked != null) {
+                                  setState(() => _semesterStart = picked);
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(12),
+                              child: InputDecorator(
+                                decoration: _buildInputDecoration('Start Date', Icons.calendar_today),
+                                child: Text(
+                                  _semesterStart != null
+                                      ? DateFormat('MMM d, y').format(_semesterStart!)
+                                      : 'Select date',
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () async {
+                                final picked = await showDatePicker(
+                                  context: context,
+                                  initialDate: _semesterEnd ?? DateTime.now().add(const Duration(days: 180)),
+                                  firstDate: _semesterStart ?? DateTime.now(),
+                                  lastDate: DateTime(2030),
+                                );
+                                if (picked != null) {
+                                  setState(() => _semesterEnd = picked);
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(12),
+                              child: InputDecorator(
+                                decoration: _buildInputDecoration('End Date', Icons.event),
+                                child: Text(
+                                  _semesterEnd != null
+                                      ? DateFormat('MMM d, y').format(_semesterEnd!)
+                                      : 'Select date',
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: _selectedColor.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: _selectedColor.withOpacity(0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.info_outline, size: 16, color: _selectedColor),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Class events will be auto-generated for this period',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: _selectedColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      
                       const SizedBox(height: 20),
 
                       // Color picker

@@ -27,6 +27,19 @@ class _CalendarPageState extends State<CalendarPage> {
     _selectedDay = _focusedDay;
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args != null && args is DateTime) {
+      setState(() {
+        _focusedDay = args;
+        _selectedDay = args;
+      });
+    }
+  }
+
   List<Event> _getItemsForDay(DateTime day) {
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
     return dataProvider.getEventsForDay(day);

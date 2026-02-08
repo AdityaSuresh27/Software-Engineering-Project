@@ -460,13 +460,15 @@ void deleteTimetableEntry(String id) {
   notifyListeners();
 }
 
-// Generate events from timetable entry for the next 30 days
 void _generateEventsFromTimetable(TimetableEntry entry) {
-  final now = DateTime.now();
-  final endDate = now.add(const Duration(days: 30));
+  // Use the entry's date range
+  final startDate = entry.semesterStart ?? DateTime.now();
+  final endDate = entry.semesterEnd ?? DateTime.now().add(const Duration(days: 180));
   
-  // Start from today
-  var currentDate = DateTime(now.year, now.month, now.day);
+  final now = DateTime.now();
+  var currentDate = startDate.isAfter(now) 
+      ? DateTime(startDate.year, startDate.month, startDate.day)
+      : DateTime(now.year, now.month, now.day);
   
   while (currentDate.isBefore(endDate)) {
     final dayOfWeek = currentDate.weekday; // 1=Monday, 7=Sunday

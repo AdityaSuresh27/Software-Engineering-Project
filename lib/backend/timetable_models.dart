@@ -26,10 +26,11 @@ class TimetableEntry {
     required this.endTime,
     this.category,
     this.color,
-    this.semesterStart,
-    this.semesterEnd,
+    DateTime? semesterStart,
+    DateTime? semesterEnd,
     this.excludedDates = const [],
-  });
+  }) : semesterStart = semesterStart ?? DateTime.now(),
+       semesterEnd = semesterEnd ?? DateTime.now().add(const Duration(days: 180)); // Default 6 months
 
   Map<String, dynamic> toJson() => {
         'id': id,

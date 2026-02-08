@@ -18,7 +18,7 @@ class EventActionDialog extends StatelessWidget {
   });
 
   bool get _isClassEvent => event.classification == 'class';
-
+  
   @override
   Widget build(BuildContext context) {
     final color = event.completionColor != null
@@ -32,76 +32,78 @@ class EventActionDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Header
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    color.withOpacity(0.15),
-                    color.withOpacity(0.08),
-                  ],
+            // Header with close button
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    AppTheme.getClassificationIcon(event.classification),
+                    color: color,
+                    size: 28,
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: color.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      AppTheme.getClassificationIcon(event.classification),
-                      color: color,
-                      size: 28,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          event.title,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        event.title,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          DateFormat('MMM d, h:mm a').format(event.startTime),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        DateFormat('MMM d, h:mm a').format(event.startTime),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close),
+                  style: IconButton.styleFrom(
+                    backgroundColor: color.withOpacity(0.1),
+                    foregroundColor: color,
+                  ),
+                ),
+              ],
             ),
 
             const SizedBox(height: 24),
 
             // Actions
             if (_isClassEvent)
-              _buildClassActions(context)
+              _buildClassActions(context, color)
             else
-              _buildRegularEventActions(context),
+              _buildRegularEventActions(context, color),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildClassActions(BuildContext context) {
+Widget _buildClassActions(BuildContext context, Color color) {
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
     final attendance = dataProvider.getAttendanceForDate(
       event.title,
       event.startTime,
     );
+
+    final allowedStatuses = [
+      AttendanceStatus.present,
+      AttendanceStatus.absent,
+      AttendanceStatus.cancelled,
+    ];
 
     return Column(
       children: [
@@ -114,7 +116,7 @@ class EventActionDialog extends StatelessWidget {
         const SizedBox(height: 16),
         
         // Attendance options
-        ...AttendanceStatus.values.map((status) {
+        ...allowedStatuses.map((status) {
           final statusColor = _getAttendanceColor(status);
           final isSelected = attendance?.status == status;
           
@@ -133,10 +135,8 @@ class EventActionDialog extends StatelessWidget {
                       : statusColor.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isSelected 
-                        ? statusColor 
-                        : statusColor.withOpacity(0.3),
-                    width: isSelected ? 2 : 1.5,
+                    color: statusColor,
+                    width: 2,
                   ),
                 ),
                 child: Row(
@@ -161,7 +161,9 @@ class EventActionDialog extends StatelessWidget {
                           ),
                           Text(
                             _getAttendanceDescription(status),
-                            style: Theme.of(context).textTheme.bodySmall,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                            ),
                           ),
                         ],
                       ),
@@ -179,13 +181,12 @@ class EventActionDialog extends StatelessWidget {
           );
         }).toList(),
 
-        const SizedBox(height: 16),
-        const Divider(),
-        const SizedBox(height: 16),
+        const SizedBox(height: 20),
 
-        // Edit button
+        // Edit button with consistent border
         SizedBox(
           width: double.infinity,
+          height: 48,
           child: OutlinedButton.icon(
             onPressed: () {
               Navigator.pop(context);
@@ -196,13 +197,19 @@ class EventActionDialog extends StatelessWidget {
             },
             icon: const Icon(Icons.edit_outlined),
             label: const Text('Edit Class Details'),
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: color, width: 2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildRegularEventActions(BuildContext context) {
+  Widget _buildRegularEventActions(BuildContext context, Color color) {
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
     final isCompleted = event.isCompleted;
 
@@ -228,6 +235,9 @@ class EventActionDialog extends StatelessWidget {
                       ? AppTheme.warningAmber 
                       : AppTheme.successGreen,
                   behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               );
             },
@@ -245,15 +255,19 @@ class EventActionDialog extends StatelessWidget {
               backgroundColor: isCompleted 
                   ? AppTheme.warningAmber 
                   : AppTheme.successGreen,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
         ),
 
         const SizedBox(height: 12),
 
-        // Edit button
+        // Edit button with consistent border
         SizedBox(
           width: double.infinity,
+          height: 48,
           child: OutlinedButton.icon(
             onPressed: () {
               Navigator.pop(context);
@@ -264,6 +278,12 @@ class EventActionDialog extends StatelessWidget {
             },
             icon: const Icon(Icons.edit_outlined),
             label: const Text('Edit Event'),
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: color, width: 2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ),
         ),
       ],
