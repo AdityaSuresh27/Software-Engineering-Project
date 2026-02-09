@@ -1,30 +1,36 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 
-import 'package:my_app2/main.dart';
+import 'package:classflow/main.dart';
+import 'package:classflow/frontend/theme_provider.dart';
+import 'package:classflow/backend/data_provider.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('ClassFlow app builds successfully', (WidgetTester tester) async {
+    // Build app with same providers as main.dart
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => ThemeProvider()),
+          ChangeNotifierProvider(create: (_) => DataProvider()),
+        ],
+        child: const ClassFlowApp(),
+      ),
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    // Initial frame
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // ⬇️ VERY IMPORTANT ⬇️
+    // SplashScreen uses a 2.5s Timer
+    // Advance fake time so timer finishes
+    await tester.pump(const Duration(seconds: 3));
+
+    // Settle remaining frames
+    await tester.pumpAndSettle();
+
+    // Assertions
+    expect(find.byType(MaterialApp), findsOneWidget);
   });
 }
