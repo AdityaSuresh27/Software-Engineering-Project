@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../backend/data_provider.dart';
 import 'main_navigation.dart';
 import 'theme.dart';
+import 'forgot_password_page.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -258,10 +259,10 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Password reset link would be sent to your email'),
-                                  behavior: SnackBarBehavior.floating,
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ForgotPasswordPage(),
                                 ),
                               );
                             },
@@ -269,7 +270,6 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
                           ),
                         ),
                       ],
-                      
                       const SizedBox(height: 24),
                       
                       // Submit button
