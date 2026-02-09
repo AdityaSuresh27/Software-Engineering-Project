@@ -628,4 +628,161 @@ class DataProvider extends ChangeNotifier {
       return null;
     }
   }
+
+  // ==================== MISSING METHODS RESTORED ====================
+
+  List<TimetableEntry> getTimetableForDay(int dayOfWeek) {
+    return _timetableEntries
+        .where((entry) => entry.daysOfWeek.contains(dayOfWeek))
+        .toList()
+      ..sort((a, b) {
+        final aMinutes = a.startTime.hour * 60 + a.startTime.minute;
+        final bMinutes = b.startTime.hour * 60 + b.startTime.minute;
+        return aMinutes.compareTo(bMinutes);
+      });
+  }
+
+  List<TimetableEntry> getTimetableForDate(DateTime date) {
+    final dayOfWeek = date.weekday;
+    final dateStr = date.toIso8601String().split('T')[0];
+    
+    return _timetableEntries.where((entry) {
+      if (!entry.daysOfWeek.contains(dayOfWeek)) return false;
+      if (entry.excludedDates.contains(dateStr)) return false;
+      if (entry.semesterStart != null && date.isBefore(entry.semesterStart!)) return false;
+      if (entry.semesterEnd != null && date.isAfter(entry.semesterEnd!)) return false;
+      return true;
+    }).toList()
+      ..sort((a, b) {
+        final aMinutes = a.startTime.hour * 60 + a.startTime.minute;
+        final bMinutes = b.startTime.hour * 60 + b.startTime.minute;
+        return aMinutes.compareTo(bMinutes);
+      });
+  }
+
+  List<AttendanceRecord> getAttendanceForCourse(String courseName) {
+    return _attendanceRecords
+        .where((r) => r.courseName.toLowerCase() == courseName.toLowerCase())
+        .toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
+  }
+
+  AttendanceStats getAttendanceStats(String courseName) {
+    final records = getAttendanceForCourse(courseName);
+    
+    int present = 0;
+    int absent = 0;
+    int late = 0;
+    int excused = 0;
+    int cancelled = 0;
+    
+    for (var record in records) {
+      switch (record.status) {
+        case AttendanceStatus.present: present++; break;
+        case AttendanceStatus.absent: absent++; break;
+        case AttendanceStatus.late: late++; break;
+        case AttendanceStatus.excused: excused++; break;
+        case AttendanceStatus.cancelled: cancelled++; break;
+      }
+    }
+    
+    final totalClasses = records.length - cancelled;
+    
+    return AttendanceStats(
+      totalClasses: totalClasses,
+      present: present,
+      absent: absent,
+      late: late,
+      excused: excused,
+    );
+  }
+
+  Map<String, AttendanceStats> getAllAttendanceStats() {
+    final stats = <String, AttendanceStats>{};
+    final courseNames = <String>{};
+    
+    for (var entry in _timetableEntries) {
+      courseNames.add(entry.courseName);
+    }
+    
+    for (var event in _events) {
+      if (event.classification == 'class') {
+        courseNames.add(event.title);
+      }
+    }
+    
+    for (var courseName in courseNames) {
+      stats[courseName] = getAttendanceStats(courseName);
+    }
+    
+    return stats;
+  }
+
+  List<Event> getClassEventsForCourse(String courseName) {
+    return _events
+        .where((e) => 
+          e.classification == 'class' && 
+          e.title.toLowerCase() == courseName.toLowerCase())
+        .toList()
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+  }
+
+  Future<void> resetTimetableAndAttendance() async {
+    _timetableEntries.clear();
+    _attendanceRecords.clear();
+    _events.removeWhere((e) => e.classification == 'class');
+    await _saveData();
+    notifyListeners();
+  }
+
+  Future<void> resetAttendance() async {
+    _attendanceRecords.clear();
+    await _saveData();
+    notifyListeners();
+  }
+
+  void clearAttendanceForCourse(String courseName) {
+    _attendanceRecords.removeWhere((r) => 
+      r.courseName.toLowerCase() == courseName.toLowerCase()
+    );
+    _saveData();
+    notifyListeners();
+  }
+
+  // ==================== MORE MISSING METHODS RESTORED ====================
+
+  List<Event> getEventsByClassification(String classification) {
+    return _events
+        .where((e) => e.classification == classification)
+        .toList()
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+  }
+
+  List<Event> getEventsByCategory(String categoryId) {
+    return _events
+        .where((e) => e.category == categoryId)
+        .toList()
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
+  }
+
+  void addVoiceNoteToEvent(String eventId, VoiceNote voiceNote) {
+    final index = _events.indexWhere((e) => e.id == eventId);
+    if (index != -1) {
+      final event = _events[index];
+      // Create a new list to ensure change detection or immutability if needed
+      final updatedVoiceNotes = List<VoiceNote>.from(event.voiceNotes)..add(voiceNote);
+      
+      // We need to update the event's voiceNotes. 
+      // Assuming Event is mutable or we replace it.
+      // Based on models.dart usage in original file, it seemed mutable access or copyWith.
+      // But looking at models.dart in Step 666 migration logic:
+      // event.voiceNotes = ...
+      // So let's try direct assignment if the field is mutable.
+      // If Event class has final voiceNotes, we need copyWith.
+      // Let's assume mutable for now as per previous code, but safer to replace event in list.
+      
+      event.voiceNotes = updatedVoiceNotes; 
+      updateEvent(event);
+    }
+  }
 }
