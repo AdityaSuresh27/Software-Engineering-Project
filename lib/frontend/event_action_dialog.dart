@@ -105,14 +105,32 @@ Widget _buildClassActions(BuildContext context, Color color) {
       AttendanceStatus.cancelled,
     ];
 
+    final bool isMarked = attendance != null;
+
     return Column(
       children: [
-        Text(
-          'Mark Attendance',
+        Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Text(
+          isMarked ? 'Edit Attendance' : 'Mark Attendance',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),
+        if (isMarked)
+          TextButton.icon(
+            onPressed: () {
+              _unmarkAttendance(context);
+            },
+            icon: const Icon(Icons.clear, size: 18),
+            label: const Text('Unmark'),
+            style: TextButton.styleFrom(
+              foregroundColor: AppTheme.errorRed,
+            ),
+          ),
+      ],
+    ),
         const SizedBox(height: 16),
         
         // Attendance options
@@ -288,6 +306,35 @@ Widget _buildClassActions(BuildContext context, Color color) {
         ),
       ],
     );
+  }
+
+  void _unmarkAttendance(BuildContext context) {
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    
+    // Find and delete the attendance record
+    final attendance = dataProvider.getAttendanceForDate(
+      event.title,
+      event.startTime,
+    );
+    
+    if (attendance != null) {
+      dataProvider.deleteAttendanceRecord(attendance.id);
+      
+      // Reset event completion
+      event.completionColor = null;
+      event.isCompleted = false;
+      dataProvider.updateEvent(event);
+      
+      Navigator.pop(context);
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Attendance unmarked'),
+          backgroundColor: AppTheme.warningAmber,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   void _markAttendance(BuildContext context, AttendanceStatus status) {

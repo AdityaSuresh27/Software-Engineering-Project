@@ -125,8 +125,6 @@ class ClassAttendanceDetailsPage extends StatelessWidget {
                       children: [
                         _buildStatColumn('Present', stats.present.toString(), AppTheme.successGreen),
                         _buildStatColumn('Absent', stats.absent.toString(), AppTheme.errorRed),
-                        _buildStatColumn('Late', stats.late.toString(), AppTheme.warningAmber),
-                        _buildStatColumn('Excused', stats.excused.toString(), AppTheme.secondaryTeal),
                       ],
                     ),
                   ],
@@ -248,102 +246,206 @@ class ClassAttendanceDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRecordCard(
-    BuildContext context,
-    AttendanceRecord record,
-    DataProvider dataProvider,
-  ) {
-    final statusColor = _getAttendanceColor(record.status);
-    final statusIcon = _getAttendanceIcon(record.status);
+Widget _buildRecordCard(
+  BuildContext context,
+  AttendanceRecord record,
+  DataProvider dataProvider,
+) {
+  final statusColor = _getAttendanceColor(record.status);
+  final statusIcon = _getAttendanceIcon(record.status);
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: statusColor, width: 2),
-              ),
-              child: Icon(statusIcon, color: statusColor, size: 24),
+  return Card(
+    margin: const EdgeInsets.only(bottom: 12),
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: statusColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: statusColor, width: 2),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    DateFormat('EEEE, MMM d, y').format(record.date),
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: statusColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(color: statusColor.withOpacity(0.3)),
-                        ),
-                        child: Text(
-                          record.status.toString().split('.').last.toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: statusColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (record.notes != null && record.notes!.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      record.notes!,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                if (value == 'delete') {
-                  dataProvider.deleteAttendanceRecord(record.id);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Attendance record deleted'),
-                      backgroundColor: AppTheme.errorRed,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                }
-              },
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'delete',
-                  child: Row(
-                    children: [
-                      Icon(Icons.delete_outline, color: Colors.red),
-                      SizedBox(width: 8),
-                      Text('Delete', style: TextStyle(color: Colors.red)),
-                    ],
+            child: Icon(statusIcon, color: statusColor, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  DateFormat('EEEE, MMM d, y').format(record.date),
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: statusColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: statusColor.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        record.status.toString().split('.').last.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: statusColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                if (record.notes != null && record.notes!.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    record.notes!,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
               ],
             ),
-          ],
+          ),
+PopupMenuButton<String>(
+  onSelected: (value) {
+    if (value == 'edit') {
+      _showEditAttendanceDialog(context, record, dataProvider);
+    } else if (value == 'unmark') {
+      _showUnmarkConfirmation(context, record, dataProvider);
+    } else if (value == 'delete') {
+      dataProvider.deleteAttendanceRecord(record.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Attendance record deleted'),
+          backgroundColor: AppTheme.errorRed,
+          behavior: SnackBarBehavior.floating,
         ),
+      );
+    }
+  },
+  itemBuilder: (context) => [
+    PopupMenuItem(
+      value: 'edit',
+      child: Row(
+        children: [
+          Icon(Icons.edit_outlined),
+          SizedBox(width: 8),
+          Text('Edit'),
+        ],
       ),
-    );
-  }
+    ),
+    PopupMenuItem(
+      value: 'unmark',
+      child: Row(
+        children: [
+          Icon(Icons.clear, color: AppTheme.warningAmber),
+          SizedBox(width: 8),
+          Text('Unmark', style: TextStyle(color: AppTheme.warningAmber)),
+        ],
+      ),
+    ),
+    PopupMenuItem(
+      value: 'delete',
+      child: Row(
+        children: [
+          Icon(Icons.delete_outline, color: Colors.red),
+          SizedBox(width: 8),
+          Text('Delete', style: TextStyle(color: Colors.red)),
+        ],
+      ),
+    ),
+  ],
+),
+        ],
+      ),
+    ),
+  );
+}
+
+void _showUnmarkConfirmation(
+  BuildContext context,
+  AttendanceRecord record,
+  DataProvider dataProvider,
+) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(9),
+            decoration: BoxDecoration(
+              color: AppTheme.warningAmber.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(11),
+            ),
+            child: Icon(Icons.warning_rounded, color: AppTheme.warningAmber, size: 22),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'Unmark Attendance?',
+              style: TextStyle(fontSize: 18.5, fontWeight: FontWeight.w700, letterSpacing: -0.2),
+            ),
+          ),
+        ],
+      ),
+      content: Text(
+        'This will remove the attendance record for ${DateFormat('MMM d, y').format(record.date)}. You can mark it again later.',
+        style: const TextStyle(fontSize: 14.5, height: 1.5, letterSpacing: -0.05),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.5)),
+        ),
+        FilledButton(
+          onPressed: () {
+            dataProvider.deleteAttendanceRecord(record.id);
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(7),
+                      ),
+                      child: const Icon(Icons.check_circle_rounded, color: Colors.white, size: 17),
+                    ),
+                    const SizedBox(width: 10),
+                    const Text('Attendance unmarked', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                  ],
+                ),
+                backgroundColor: AppTheme.warningAmber,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                margin: const EdgeInsets.all(14),
+              ),
+            );
+          },
+          style: FilledButton.styleFrom(
+            backgroundColor: AppTheme.warningAmber,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          child: const Text('Unmark', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14.5)),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildUnmarkedClassCard(
     BuildContext context,
@@ -404,76 +506,177 @@ class ClassAttendanceDetailsPage extends StatelessWidget {
     );
   }
 
-  void _showMarkAttendanceDialog(
-    BuildContext context,
-    DateTime date,
-    DataProvider dataProvider,
-  ) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Mark Attendance - ${DateFormat('MMM d').format(date)}'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: AttendanceStatus.values.map((status) {
-            final statusColor = _getAttendanceColor(status);
-            final statusIcon = _getAttendanceIcon(status);
-            
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: InkWell(
-                onTap: () {
-                  final record = AttendanceRecord(
-                    id: const Uuid().v4(),
-                    courseName: courseName,
-                    date: date,
-                    status: status,
-                  );
-                  dataProvider.markAttendance(record);
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Marked as ${status.toString().split('.').last}'),
-                      backgroundColor: statusColor,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: statusColor.withOpacity(0.3), width: 2),
+void _showMarkAttendanceDialog(
+  BuildContext context,
+  DateTime date,
+  DataProvider dataProvider,
+) {
+  // Only show present, absent, cancelled for class attendance
+  final allowedStatuses = [
+    AttendanceStatus.present,
+    AttendanceStatus.absent,
+    AttendanceStatus.cancelled,
+  ];
+  
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Mark Attendance - ${DateFormat('MMM d').format(date)}'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: allowedStatuses.map((status) {
+          final statusColor = _getAttendanceColor(status);
+          final statusIcon = _getAttendanceIcon(status);
+          
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: InkWell(
+              onTap: () {
+                final record = AttendanceRecord(
+                  id: const Uuid().v4(),
+                  courseName: courseName,
+                  date: date,
+                  status: status,
+                );
+                dataProvider.markAttendance(record);
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Marked as ${status.toString().split('.').last}'),
+                    backgroundColor: statusColor,
+                    behavior: SnackBarBehavior.floating,
                   ),
-                  child: Row(
-                    children: [
-                      Icon(statusIcon, color: statusColor),
-                      const SizedBox(width: 12),
-                      Text(
+                );
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: statusColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: statusColor.withOpacity(0.3), width: 2),
+                ),
+                child: Row(
+                  children: [
+                    Icon(statusIcon, color: statusColor),
+                    const SizedBox(width: 12),
+                    Text(
+                      status.toString().split('.').last.toUpperCase(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: statusColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+      ],
+    ),
+  );
+}
+
+void _showEditAttendanceDialog(
+  BuildContext context,
+  AttendanceRecord record,
+  DataProvider dataProvider,
+) {
+  // Only show present, absent, cancelled for class attendance
+  final allowedStatuses = [
+    AttendanceStatus.present,
+    AttendanceStatus.absent,
+    AttendanceStatus.cancelled,
+  ];
+  
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Edit Attendance - ${DateFormat('MMM d').format(record.date)}'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: allowedStatuses.map((status) {
+          final statusColor = _getAttendanceColor(status);
+          final statusIcon = _getAttendanceIcon(status);
+          final isSelected = record.status == status;
+          
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: InkWell(
+              onTap: () {
+                final updatedRecord = AttendanceRecord(
+                  id: record.id,
+                  courseName: record.courseName,
+                  date: record.date,
+                  status: status,
+                  notes: record.notes,
+                );
+                dataProvider.markAttendance(updatedRecord);
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Updated to ${status.toString().split('.').last}'),
+                    backgroundColor: statusColor,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: isSelected 
+                      ? statusColor.withOpacity(0.15)
+                      : statusColor.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: statusColor,
+                    width: 2,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(statusIcon, color: statusColor, size: 24),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
                         status.toString().split('.').last.toUpperCase(),
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
                           color: statusColor,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    if (isSelected)
+                      Icon(
+                        Icons.check_circle,
+                        color: statusColor,
+                        size: 20,
+                      ),
+                  ],
                 ),
               ),
-            );
-          }).toList(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-        ],
+            ),
+          );
+        }).toList(),
       ),
-    );
-  }
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+      ],
+    ),
+  );
+}
 
   Color _getAttendanceColor(AttendanceStatus status) {
       switch (status) {
