@@ -7,6 +7,7 @@ import 'auth_screen.dart';
 import '../backend/data_provider.dart';
 import 'manage_categories_page.dart';
 import 'privacy_policy_page.dart';
+import 'otp_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -137,6 +138,14 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 24),
           _buildSection(
             context,
+            'Security',
+            [
+              _buildMfaTile(context, dataProvider),
+            ],
+          ),
+          const SizedBox(height: 24),
+          _buildSection(
+            context,
             'Notifications',
             [
               SwitchListTile(
@@ -187,6 +196,117 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const SizedBox(height: 32),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMfaTile(BuildContext context, DataProvider dataProvider) {
+    final isMfaEnabled = dataProvider.mfaEnabled;
+
+    // Extracted as a local function so both the ListTile onTap and any
+    // future trigger points (e.g. a dedicated button) can reuse it.
+    Future<void> handleToggle() async {
+      // Always show a confirmation dialog before changing MFA state —
+      // accidental toggles on a security setting are especially disruptive.
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(isMfaEnabled ? 'Disable 2FA?' : 'Enable 2FA?'),
+          content: Text(
+            isMfaEnabled
+                ? 'Disabling two-factor authentication will make your account less secure. Are you sure?'
+                : 'Enabling two-factor authentication will require a 6-digit code every time you sign in. Continue?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: FilledButton.styleFrom(
+                backgroundColor:
+                    isMfaEnabled ? AppTheme.errorRed : AppTheme.successGreen,
+              ),
+              child: Text(isMfaEnabled ? 'Disable' : 'Enable'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirm == true && mounted) {
+        await dataProvider.setMfaEnabled(!isMfaEnabled);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                isMfaEnabled
+                    ? '2FA has been disabled'
+                    : '2FA has been enabled. You will need a code on next sign in.',
+              ),
+              backgroundColor:
+                  isMfaEnabled ? AppTheme.warningAmber : AppTheme.successGreen,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    }
+
+    return ListTile(
+      // onTap on the whole tile is more reliable than GestureDetector on the
+      // trailing widget — trailing widgets sit inside the ListTile's internal
+      // layout and don't always receive gesture events as expected.
+      onTap: handleToggle,
+      leading: Icon(
+        Icons.verified_user_outlined,
+        color: isMfaEnabled ? AppTheme.successGreen : null,
+      ),
+      title: const Text(
+        'Two-Factor Authentication',
+        style: TextStyle(fontWeight: FontWeight.w600),
+      ),
+      subtitle: Text(
+        isMfaEnabled
+            ? 'Extra login step is ON — tap to disable'
+            : 'Tap to add an extra layer of security',
+        style: TextStyle(
+          fontSize: 12,
+          color: isMfaEnabled ? AppTheme.successGreen : null,
+        ),
+      ),
+      trailing: IgnorePointer(
+        // IgnorePointer prevents the toggle visual from intercepting taps
+        // that should propagate up to the ListTile's onTap. The toggle is
+        // purely decorative here — all interaction goes through the tile.
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          width: 56,
+          height: 30,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: isMfaEnabled
+                ? AppTheme.successGreen
+                : Colors.grey.withOpacity(0.4),
+          ),
+          child: Stack(
+            children: [
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 250),
+                left: isMfaEnabled ? 28 : 2,
+                top: 2,
+                child: Container(
+                  width: 26,
+                  height: 26,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
