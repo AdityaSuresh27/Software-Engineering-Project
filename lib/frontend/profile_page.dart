@@ -149,14 +149,19 @@ class _ProfilePageState extends State<ProfilePage> {
             'Notifications',
             [
               SwitchListTile(
+                secondary: const Icon(Icons.alarm_outlined),
                 title: const Text('Event Reminders'),
-                value: true,
-                onChanged: (value) {},
+                subtitle: const Text('Notify at reminder times set on each event'),
+                // Reads live from DataProvider so toggle state persists across restarts
+                value: dataProvider.notifyReminders,
+                onChanged: (value) => dataProvider.setNotifyReminders(value),
               ),
               SwitchListTile(
-                title: const Text('Deadline Alerts'),
-                value: true,
-                onChanged: (value) {},
+                secondary: const Icon(Icons.notifications_active_outlined),
+                title: const Text('Event Start Alerts'),
+                subtitle: const Text('Notify when an event is beginning'),
+                value: dataProvider.notifyEventStart,
+                onChanged: (value) => dataProvider.setNotifyEventStart(value),
               ),
             ],
           ),

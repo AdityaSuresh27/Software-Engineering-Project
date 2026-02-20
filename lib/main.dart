@@ -26,6 +26,8 @@ Future<void> main() async {
   );
 }
 
+// Global key so notification taps can navigate without a BuildContext
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 class ClassFlowApp extends StatelessWidget {
   const ClassFlowApp({super.key});
 
@@ -40,6 +42,7 @@ class ClassFlowApp extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
           themeMode: themeProvider.themeMode,
           home: const SplashScreen(),
+          navigatorKey: navigatorKey,
         );
       },
     );

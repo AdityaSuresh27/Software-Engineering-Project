@@ -13,6 +13,9 @@ class DataProvider extends ChangeNotifier {
   bool _isAuthenticated = false;
   bool _mfaEnabled = false;
   DateTime? _lastActiveAt;
+  // Global notification toggles — each maps to a profile settings switch
+  bool _notifyReminders = true;   // user-set reminder times on events
+  bool _notifyEventStart = true;  // fires when an event's startTime arrives
   List<TimetableEntry> _timetableEntries = [];
   List<AttendanceRecord> _attendanceRecords = [];
 
@@ -22,6 +25,8 @@ class DataProvider extends ChangeNotifier {
   List<Category> get categories => _categories;
   bool get isAuthenticated => _isAuthenticated;
   bool get mfaEnabled => _mfaEnabled;
+  bool get notifyReminders => _notifyReminders;
+  bool get notifyEventStart => _notifyEventStart;
 
   DataProvider() {
     _loadData();
@@ -32,6 +37,8 @@ class DataProvider extends ChangeNotifier {
 Future<void> _checkAuthStatus() async {
     final prefs = await SharedPreferences.getInstance();
     _mfaEnabled = prefs.getBool('mfaEnabled') ?? false;
+    _notifyReminders = prefs.getBool('notifyReminders') ?? true;
+    _notifyEventStart = prefs.getBool('notifyEventStart') ?? true;
 
     final lastActiveStr = prefs.getString('lastActiveAt');
     if (lastActiveStr != null) {
@@ -89,13 +96,48 @@ Future<void> _checkAuthStatus() async {
     _categories = [];
     notifyListeners();
   }
-  
+
   // Persists the MFA preference immediately to SharedPreferences so it
   // survives app restarts and is available before _loadData completes.
   Future<void> setMfaEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('mfaEnabled', enabled);
     _mfaEnabled = enabled;
+    notifyListeners();
+  }
+
+  Future<void> setNotifyReminders(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notifyReminders', enabled);
+    _notifyReminders = enabled;
+    // Re-schedule or cancel all reminder notifications across every event
+    // to immediately reflect the new setting without needing an app restart.
+    if (enabled) {
+      for (final event in _events) {
+        _scheduleReminderNotifications(event);
+      }
+    } else {
+      for (final event in _events) {
+        _cancelReminderNotifications(event.id);
+      }
+    }
+    notifyListeners();
+  }
+
+  Future<void> setNotifyEventStart(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notifyEventStart', enabled);
+    _notifyEventStart = enabled;
+    // Same immediate re-scheduling logic as reminders above.
+    if (enabled) {
+      for (final event in _events) {
+        _scheduleEventStartNotification(event);
+      }
+    } else {
+      for (final event in _events) {
+        _cancelEventStartNotification(event.id);
+      }
+    }
     notifyListeners();
   }
 
@@ -424,32 +466,114 @@ Future<void> _checkAuthStatus() async {
       'tasks': events.where((e) => e.isTask && !e.isCompleted).length,
     };
   }
-  // Notification scheduling helpers
+
+  // Schedules both reminder notifications and the event-start notification,
+  // but only if the corresponding global setting is enabled.
   void _scheduleEventNotifications(Event event) {
+    if (_notifyReminders) _scheduleReminderNotifications(event);
+    if (_notifyEventStart) _scheduleEventStartNotification(event);
+  }
+
+  void _cancelEventNotifications(String eventId) {
+    _cancelReminderNotifications(eventId);
+    _cancelEventStartNotification(eventId);
+  }
+
+  // Schedules one notification per user-set reminder time.
+  // Notification IDs are offset from the event hash to avoid collisions
+  // with the event-start notification which uses the base hash alone.
+void _scheduleReminderNotifications(Event event) {
     final notificationService = NotificationService();
-    
     for (int i = 0; i < event.reminders.length; i++) {
       final reminder = event.reminders[i];
       if (reminder.isAfter(DateTime.now())) {
-        final notificationId = event.id.hashCode + i;
+        // Work out how far away the event is to write a natural time phrase
+        final now = DateTime.now();
+        final startDay = DateTime(event.startTime.year, event.startTime.month, event.startTime.day);
+        final today = DateTime(now.year, now.month, now.day);
+        final tomorrow = today.add(const Duration(days: 1));
+
+        final String dayLabel;
+        if (startDay == today) {
+          dayLabel = 'today';
+        } else if (startDay == tomorrow) {
+          dayLabel = 'tomorrow';
+        } else {
+          // e.g. "on Mon, 3 Mar"
+          dayLabel = 'on ${_formatDate(event.startTime)}';
+        }
+
+        final String endInfo = event.endTime != null
+            ? ' – ends ${_formatTime(event.endTime!)}'
+            : '';
+
+        final classification = event.classification[0].toUpperCase() +
+            event.classification.substring(1);
+
         notificationService.scheduleNotification(
-          id: notificationId,
-          title: event.title,
-          body: 'Reminder: ${event.classification} event',
+          id: event.id.hashCode + i + 1,
+          title: '⏰ Reminder: ${event.title}',
+          body: '$classification $dayLabel at ${_formatTime(event.startTime)}$endInfo'
+              '${event.location != null ? '\n📍 ${event.location}' : ''}',
           scheduledDate: reminder,
+          payload: event.id, // used by notification tap handler to open the event
         );
       }
     }
   }
 
-  void _cancelEventNotifications(String eventId) {
+  void _cancelReminderNotifications(String eventId) {
     final notificationService = NotificationService();
-    final event = _events.firstWhere((e) => e.id == eventId, orElse: () => _events.first);
-    
+    final event = _events.firstWhere(
+      (e) => e.id == eventId,
+      orElse: () => Event(
+        id: '', title: '', classification: 'other', startTime: DateTime.now(),
+      ),
+    );
     for (int i = 0; i < event.reminders.length; i++) {
-      final notificationId = eventId.hashCode + i;
-      notificationService.cancelNotification(notificationId);
+      notificationService.cancelNotification(event.id.hashCode + i + 1);
     }
+  }
+
+  // Schedules a single notification that fires exactly at the event's startTime.
+  // Uses the base hash (offset 0) as its ID, separate from reminder IDs.
+  void _scheduleEventStartNotification(Event event) {
+    if (event.startTime.isAfter(DateTime.now())) {
+      final classification = event.classification[0].toUpperCase() +
+          event.classification.substring(1);
+
+      final String endInfo = event.endTime != null
+          ? ' · Ends ${_formatTime(event.endTime!)}'
+          : '';
+
+      NotificationService().scheduleNotification(
+        id: event.id.hashCode,
+        title: '🔔 Starting now: ${event.title}',
+        body: '$classification starting now$endInfo'
+            '${event.location != null ? '\n📍 ${event.location}' : ''}',
+        scheduledDate: event.startTime,
+        payload: event.id,
+      );
+    }
+  }
+  void _cancelEventStartNotification(String eventId) {
+    NotificationService().cancelNotification(eventId.hashCode);
+  }
+
+  String _formatTime(DateTime dt) {
+    final hour = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
+    final minute = dt.minute.toString().padLeft(2, '0');
+    final period = dt.hour < 12 ? 'AM' : 'PM';
+    return '$hour:$minute $period';
+  }
+
+  String _formatDate(DateTime dt) {
+    const months = [
+      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    const days = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return '${days[dt.weekday]}, ${dt.day} ${months[dt.month]}';
   }
   // ==================== TIMETABLE METHODS ====================
 

@@ -3,6 +3,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/material.dart';
+import '../main.dart'; // for navigatorKey
+import '../frontend/event_action_dialog.dart';
+import '../backend/models.dart';
+import '../backend/data_provider.dart';
+import 'package:provider/provider.dart';
 
 // Singleton so notification state is shared across the app without
 // needing to pass an instance through the widget tree.
@@ -43,8 +49,26 @@ class NotificationService {
       final result = await _notifications.initialize(
         initSettings,
         onDidReceiveNotificationResponse: (details) {
-          // payload could be used here in future to deep-link to a specific event
-        },
+        // payload is the event ID set when the notification was scheduled
+        final eventId = details.payload;
+        if (eventId == null || eventId.isEmpty) return;
+
+        final context = navigatorKey.currentContext;
+        if (context == null) return;
+
+        final dataProvider =
+            Provider.of<DataProvider>(context, listen: false);
+        try {
+          final event = dataProvider.events.firstWhere((e) => e.id == eventId);
+          // Push the event detail dialog on top of whatever screen is open
+          showDialog(
+            context: navigatorKey.currentContext!,
+            builder: (_) => EventActionDialog(event: event),
+          );
+        } catch (_) {
+          // Event may have been deleted since the notification was scheduled
+        }
+      },
       );
       _initialized = result ?? false;
     } catch (e) {
@@ -71,12 +95,11 @@ class NotificationService {
     required String title,
     required String body,
     required DateTime scheduledDate,
+    String? payload, // event ID so tapping opens the correct event
   }) async {
     if (!_initialized) await initialize();
     if (!_initialized) return;
 
-    // Skip silently — past reminders are filtered out in the UI already,
-    // but this is a safety net in case of clock drift or delayed saves.
     if (scheduledDate.isBefore(DateTime.now())) return;
 
     const details = NotificationDetails(
@@ -84,53 +107,49 @@ class NotificationService {
         'classflow_reminders',
         'Event Reminders',
         channelDescription: 'Reminders for your events and tasks',
-        importance: Importance.high,
+        importance: Importance.max, // max so it shows as a heads-up banner
         priority: Priority.high,
         playSound: true,
         enableVibration: true,
+        styleInformation: BigTextStyleInformation(''), // allows long body text to expand
+        icon: '@mipmap/ic_launcher',
       ),
       iOS: DarwinNotificationDetails(
         presentAlert: true,
         presentBadge: true,
         presentSound: true,
+        threadIdentifier: 'classflow_events',
       ),
     );
 
-    // Convert to timezone-aware datetime so notifications fire correctly
-    // even if the user travels to a different timezone after scheduling.
     final tzDate = tz.TZDateTime.from(scheduledDate, tz.local);
 
     try {
-      // Preferred: exact alarm wakes the device even in Doze mode.
-      // Requires SCHEDULE_EXACT_ALARM permission on Android 12+.
       await _notifications.zonedSchedule(
         id,
         title,
         body,
         tzDate,
         details,
+        payload: payload, // passed through to onDidReceiveNotificationResponse
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
       );
     } catch (_) {
       try {
-        // Fallback: inexact alarm — Android may delay this by up to 15 minutes
-        // depending on battery optimization settings, but it will still fire.
         await _notifications.zonedSchedule(
           id,
           title,
           body,
           tzDate,
           details,
+          payload: payload,
           androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime,
         );
-      } catch (_) {
-        // Device has notifications fully disabled or in an unsupported environment.
-        // Fail silently — the user will still see reminders inside the app.
-      }
+      } catch (_) {}
     }
   }
 
