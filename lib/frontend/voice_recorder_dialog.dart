@@ -239,33 +239,33 @@ class _VoiceRecorderDialogState extends State<VoiceRecorderDialog> {
               
               if (_isRecording) ...[
                 const SizedBox(height: 24),
-                TextField(
-                  controller: _tagsController,
-                  decoration: InputDecoration(
-                    labelText: 'Add Tags (optional)',
-                    hintText: 'e.g., important, chapter-3',
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: _addTag,
-                    ),
+              TextField(
+                controller: _tagsController,
+                decoration: InputDecoration(
+                  labelText: 'Add Tags (optional)',
+                  hintText: 'e.g., important, chapter-3',
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: _addTag,
                   ),
-                  onSubmitted: (_) => _addTag(),
                 ),
-                if (_tags.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _tags.map((tag) {
-                      return Chip(
-                        label: Text(tag),
-                        onDeleted: () => _removeTag(tag),
-                        deleteIcon: const Icon(Icons.close, size: 16),
-                      );
-                    }).toList(),
-                  ),
-                ],
+                onSubmitted: (_) => _addTag(),
+              ),
+              if (_tags.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: _tags.map((tag) {
+                    return Chip(
+                      label: Text(tag),
+                      onDeleted: () => _removeTag(tag),
+                      deleteIcon: const Icon(Icons.close, size: 16),
+                    );
+                  }).toList(),
+                ),
+              ],
               ],
               
               const SizedBox(height: 24),

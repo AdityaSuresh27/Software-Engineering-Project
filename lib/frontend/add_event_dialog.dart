@@ -262,6 +262,12 @@ class _AddEventDialogState extends State<AddEventDialog>
     setState(() {
       _voiceNotes.removeAt(index);
     });
+    // If editing existing event, save immediately
+    if (widget.editEvent != null) {
+      widget.editEvent!.voiceNotes = List.from(_voiceNotes);
+      final dataProvider = Provider.of<DataProvider>(context, listen: false);
+      dataProvider.updateEvent(widget.editEvent!);
+    }
   }
 
 void _saveEvent() {
