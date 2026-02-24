@@ -99,10 +99,14 @@ Future<void> _checkAuthStatus() async {
     await prefs.remove('lastActiveAt');
     await prefs.remove('events');
     await prefs.remove('categories');
+    await prefs.remove('timetable');
+    await prefs.remove('attendance');
     _isAuthenticated = false;
     _lastActiveAt = null;
     _events = [];
     _categories = [];
+    _timetableEntries = [];
+    _attendanceRecords = [];
     notifyListeners();
   }
 
