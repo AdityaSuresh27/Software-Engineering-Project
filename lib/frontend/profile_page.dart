@@ -17,7 +17,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String _selectedTheme = 'Professional';
 
   Future<void> _handleSignOut() async {
     final confirm = await showDialog<bool>(
@@ -105,13 +104,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 onChanged: (value) {
                   themeProvider.setThemeMode(value ? ThemeMode.dark : ThemeMode.light);
                 },
-              ),
-              _buildDropdownTile(
-                'Color Theme',
-                _selectedTheme,
-                ['Professional', 'Academic', 'Minimal'],
-                (value) => setState(() => _selectedTheme = value!),
-                Icons.palette_outlined,
               ),
             ],
           ),
