@@ -307,18 +307,7 @@ Future<void> _checkAuthStatus() async {
     }
   }
 
-  // legacy method for populating default categories; no longer used.
-  // Keeping definition for now in case migration logic or testing needs it.
-  void _initializeDefaultCategories() {
-    _categories = [
-      Category(id: 'general', name: 'General', color: '#8E8E93'),
-      Category(id: 'math', name: 'Mathematics', color: '#4A90E2'),
-      Category(id: 'science', name: 'Science', color: '#6FCFB4'),
-      Category(id: 'language', name: 'Language', color: '#9B72CB'),
-      Category(id: 'social', name: 'Social Studies', color: '#FF8C61'),
-    ];
-    _saveData();
-  }
+
 
   // Save data to SharedPreferences
   Future<void> _saveData() async {
@@ -851,7 +840,6 @@ AttendanceStats getAttendanceStats(String courseName) {
   int absent = 0;
   int late = 0;
   int excused = 0;
-  int cancelled = 0; // Classes that were cancelled
   
   for (var record in records) {
     switch (record.status) {
@@ -868,7 +856,7 @@ AttendanceStats getAttendanceStats(String courseName) {
         excused += record.periodCount;
         break;
       case AttendanceStatus.cancelled:
-        cancelled += record.periodCount;
+        // Cancelled classes are not counted in attendance stats
         break;
     }
   }
