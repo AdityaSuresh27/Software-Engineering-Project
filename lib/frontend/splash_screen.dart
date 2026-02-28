@@ -5,6 +5,8 @@ import 'dart:async';
 import 'onboarding_screen.dart';
 import 'main_navigation.dart';
 import '../backend/data_provider.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
@@ -37,6 +40,13 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward();
+    () async {
+      try {
+        await _audioPlayer.play(AssetSource('startup.mp3'));
+      } catch (e) {
+        print('>>> Audio error: $e');
+      }
+    }();
 
     // Wait for both the minimum splash duration and DataProvider to finish
     // loading from SharedPreferences before deciding where to navigate.
@@ -54,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen>
     // _loadData() and _checkAuthStatus() have completed, so isAuthenticated
     // is guaranteed to reflect the persisted value by the time we read it.
     await Future.wait([
-      Future.delayed(const Duration(milliseconds: 2000)),
+      Future.delayed(const Duration(milliseconds: 4000)),
       dataProvider.ready,
     ]);
 
@@ -82,10 +92,14 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+void dispose() {
+  _controller.dispose();
+  // Don't dispose audioPlayer immediately - let it finish playing
+  Future.delayed(const Duration(seconds: 6), () {
+    _audioPlayer.dispose();
+  });
+  super.dispose();
+}
 
   @override
   Widget build(BuildContext context) {
