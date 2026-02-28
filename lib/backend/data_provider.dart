@@ -174,7 +174,10 @@ Future<void> _checkAuthStatus() async {
       final List<dynamic> categoriesList = jsonDecode(categoriesJson);
       _categories = categoriesList.map((c) => Category.fromJson(c)).toList();
     } else {
-      _initializeDefaultCategories();
+      // no saved categories yet; start with empty list instead of seeding
+      // predefined subjects. Users can create their own categories as needed.
+      _categories = [];
+      await _saveData();
     }
     // Load timetable entries
     final timetableJson = prefs.getString('timetable');
@@ -284,6 +287,8 @@ Future<void> _checkAuthStatus() async {
     }
   }
 
+  // legacy method for populating default categories; no longer used.
+  // Keeping definition for now in case migration logic or testing needs it.
   void _initializeDefaultCategories() {
     _categories = [
       Category(id: 'general', name: 'General', color: '#8E8E93'),
