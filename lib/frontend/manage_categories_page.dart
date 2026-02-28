@@ -189,6 +189,7 @@ class _ManageCategoriesPageState extends State<ManageCategoriesPage> {
                   },
                 ),
           floatingActionButton: FloatingActionButton.extended(
+            heroTag: 'categories_fab',
             onPressed: () => _showAddCategoryDialog(),
             icon: const Icon(Icons.add),
             label: const Text('Add Category'),

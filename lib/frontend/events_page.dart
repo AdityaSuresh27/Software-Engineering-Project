@@ -127,6 +127,7 @@ class _EventsPageState extends State<EventsPage> {
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
+            heroTag: 'events_fab',
             onPressed: () => showDialog(
               context: context,
               builder: (context) => const AddEventDialog(),

@@ -153,6 +153,7 @@ class _CalendarPageState extends State<CalendarPage> {
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
+            heroTag: 'calendar_fab',
             onPressed: () => showDialog(
               context: context,
               builder: (context) => AddEventDialog(selectedDate: _selectedDay),
