@@ -17,6 +17,8 @@ class DataProvider extends ChangeNotifier {
   // Global notification toggles — each maps to a profile settings switch
   bool _notifyReminders = true;   // user-set reminder times on events
   bool _notifyEventStart = true;  // fires when an event's startTime arrives
+  bool _muteStartupSound = false; // mute startup.mp3 on app launch
+  bool _muteRingtone = false;     // mute accept1.mp3 and accept2.mp3
   List<TimetableEntry> _timetableEntries = [];
   List<AttendanceRecord> _attendanceRecords = [];
   // Completes once both _loadData and _checkAuthStatus have finished.
@@ -33,6 +35,8 @@ class DataProvider extends ChangeNotifier {
   bool get mfaEnabled => _mfaEnabled;
   bool get notifyReminders => _notifyReminders;
   bool get notifyEventStart => _notifyEventStart;
+  bool get muteStartupSound => _muteStartupSound;
+  bool get muteRingtone => _muteRingtone;
 
 DataProvider() {
     // Run both loads concurrently and complete the ready future only after
@@ -48,6 +52,8 @@ Future<void> _checkAuthStatus() async {
     _mfaEnabled = prefs.getBool('mfaEnabled') ?? false;
     _notifyReminders = prefs.getBool('notifyReminders') ?? true;
     _notifyEventStart = prefs.getBool('notifyEventStart') ?? true;
+    _muteStartupSound = prefs.getBool('muteStartupSound') ?? false;
+    _muteRingtone = prefs.getBool('muteRingtone') ?? false;
 
     final lastActiveStr = prefs.getString('lastActiveAt');
     if (lastActiveStr != null) {
@@ -151,6 +157,20 @@ Future<void> _checkAuthStatus() async {
         _cancelEventStartNotification(event.id);
       }
     }
+    notifyListeners();
+  }
+
+  Future<void> setMuteStartupSound(bool muted) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('muteStartupSound', muted);
+    _muteStartupSound = muted;
+    notifyListeners();
+  }
+
+  Future<void> setMuteRingtone(bool muted) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('muteRingtone', muted);
+    _muteRingtone = muted;
     notifyListeners();
   }
 

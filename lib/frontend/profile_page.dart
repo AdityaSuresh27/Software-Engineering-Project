@@ -159,6 +159,27 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 24),
           _buildSection(
             context,
+            'Sound',
+            [
+              SwitchListTile(
+                secondary: const Icon(Icons.volume_off_outlined),
+                title: const Text('Mute Startup Sound'),
+                subtitle: const Text('Disable sound when opening the app'),
+                value: dataProvider.muteStartupSound,
+                onChanged: (value) => dataProvider.setMuteStartupSound(value),
+              ),
+              SwitchListTile(
+                secondary: const Icon(Icons.notifications_off_outlined),
+                title: const Text('Mute Ringtones'),
+                subtitle: const Text('Disable sounds for event creation and completion'),
+                value: dataProvider.muteRingtone,
+                onChanged: (value) => dataProvider.setMuteRingtone(value),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          _buildSection(
+            context,
             'About',
             [
               _buildInfoTile('Version', '2.0.0', Icons.info_outline),

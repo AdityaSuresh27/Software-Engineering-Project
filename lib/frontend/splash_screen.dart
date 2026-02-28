@@ -173,14 +173,17 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _startSequence() async {
-    // Play audio immediately
-    () async {
-      try {
-        await _audioPlayer.play(AssetSource('startup.mp3'));
-      } catch (e) {
-        debugPrint('Audio error: $e');
-      }
-    }();
+    // Play audio immediately if not muted
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    if (!dataProvider.muteStartupSound) {
+      () async {
+        try {
+          await _audioPlayer.play(AssetSource('startup.mp3'));
+        } catch (e) {
+          debugPrint('Audio error: $e');
+        }
+      }();
+    }
 
     // Logo pops in
     await Future.delayed(const Duration(milliseconds: 200));

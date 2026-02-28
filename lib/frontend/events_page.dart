@@ -210,8 +210,8 @@ class _EventsPageState extends State<EventsPage> {
                 final wasCompleted = event.isCompleted;
                 dataProvider.toggleEventComplete(event.id);
                 
-                // Play completion sound when task is marked complete
-                if (!wasCompleted) {
+                // Play completion sound when task is marked complete (if not muted)
+                if (!wasCompleted && !dataProvider.muteRingtone) {
                   final audioPlayer = AudioPlayer();
                   try {
                     await audioPlayer.play(AssetSource('accept2.mp3'));

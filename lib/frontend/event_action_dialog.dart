@@ -242,8 +242,8 @@ Widget _buildClassActions(BuildContext context, Color color) {
             onPressed: () async {
               dataProvider.toggleEventComplete(event.id);
               
-              // Play completion sound when event is marked complete
-              if (!isCompleted) {
+              // Play completion sound when event is marked complete (if not muted)
+              if (!isCompleted && !dataProvider.muteRingtone) {
                 final audioPlayer = AudioPlayer();
                 try {
                   await audioPlayer.play(AssetSource('accept2.mp3'));
@@ -353,12 +353,14 @@ Widget _buildClassActions(BuildContext context, Color color) {
     event.isCompleted = true; 
     dataProvider.updateEvent(event);
     
-    // Play completion sound when attendance is marked
-    final audioPlayer = AudioPlayer();
-    try {
-      await audioPlayer.play(AssetSource('accept2.mp3'));
-    } catch (e) {
-      debugPrint('Error playing accept2.mp3: $e');
+    // Play completion sound when attendance is marked (if not muted)
+    if (!dataProvider.muteRingtone) {
+      final audioPlayer = AudioPlayer();
+      try {
+        await audioPlayer.play(AssetSource('accept2.mp3'));
+      } catch (e) {
+        debugPrint('Error playing accept2.mp3: $e');
+      }
     }
     
     Navigator.pop(context);

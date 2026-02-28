@@ -327,11 +327,13 @@ void _saveEvent() async {
     );
     dataProvider.addEvent(event);
     
-    // Play accept sound when event is created
-    try {
-      await audioPlayer.play(AssetSource('accept1.mp3'));
-    } catch (e) {
-      debugPrint('Error playing accept1.mp3: $e');
+    // Play accept sound when event is created (if not muted)
+    if (!dataProvider.muteRingtone) {
+      try {
+        await audioPlayer.play(AssetSource('accept1.mp3'));
+      } catch (e) {
+        debugPrint('Error playing accept1.mp3: $e');
+      }
     }
   }
 

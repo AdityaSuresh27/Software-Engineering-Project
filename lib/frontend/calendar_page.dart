@@ -372,12 +372,14 @@ class _CalendarPageState extends State<CalendarPage> {
     final duplicatedEvent = event.duplicate();
     dataProvider.addEvent(duplicatedEvent);
     
-    // Play accept sound when event is duplicated (created)
-    final audioPlayer = AudioPlayer();
-    try {
-      await audioPlayer.play(AssetSource('accept1.mp3'));
-    } catch (e) {
-      debugPrint('Error playing accept1.mp3: $e');
+    // Play accept sound when event is duplicated (created) if not muted
+    if (!dataProvider.muteRingtone) {
+      final audioPlayer = AudioPlayer();
+      try {
+        await audioPlayer.play(AssetSource('accept1.mp3'));
+      } catch (e) {
+        debugPrint('Error playing accept1.mp3: $e');
+      }
     }
     
     AppTheme.showTopNotification(
