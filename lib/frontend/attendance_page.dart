@@ -57,38 +57,20 @@ class _AttendancePageState extends State<AttendancePage> {
     ],
   ),
   actions: [
-              AppPopupMenuButton<String>(
-                tooltip: 'Options',
-                iconData: Icons.more_vert_rounded,
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'predict',
-                    child: Row(
-                      children: [
-                        Icon(Icons.show_chart, color: AppTheme.primaryBlue),
-                        SizedBox(width: 8),
-                        Text('Attendance Predictor', style: TextStyle(color: AppTheme.primaryBlue)),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuDivider(),
-                  const PopupMenuItem(
-                    value: 'reset',
-                    child: Row(
-                      children: [
-                        Icon(Icons.restart_alt, color: Colors.red),
-                        SizedBox(width: 8),
-                        Text('Reset All Attendance', style: TextStyle(color: Colors.red)),
-                      ],
-                    ),
-                  ),
-                ],
-                onSelected: (value) {
-                  if (value == 'predict') {
-                    _showPredictorSelection(context, courseNames);
-                  } else if (value == 'reset') {
-                    _showResetConfirmation(context, dataProvider);
-                  }
+              // Attendance Predictor Button
+              IconButton(
+                icon: const Icon(Icons.show_chart),
+                tooltip: 'Attendance Predictor',
+                onPressed: () {
+                  _showPredictorSelection(context, courseNames);
+                },
+              ),
+              // Reset/Delete Button
+              IconButton(
+                icon: const Icon(Icons.delete_sweep),
+                tooltip: 'Reset All Attendance',
+                onPressed: () {
+                  _showResetConfirmation(context, dataProvider);
                 },
               ),
             ],
