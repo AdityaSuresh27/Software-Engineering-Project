@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "verify compilation",
+			"type": "shell",
+			"command": "cd c:\\Users\\lenovo\\Desktop\\SE_project\\Software-Engineering-Project && flutter analyze lib/frontend/event_action_dialog.dart 2>&1 | head -20",
+			"isBackground": false
+		}
+	]
+}

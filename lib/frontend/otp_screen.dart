@@ -150,7 +150,7 @@ class _OtpScreenState extends State<OtpScreen>
                   width: 100,
                   height: 100,
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
+                    color: color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Icon(
@@ -175,7 +175,7 @@ class _OtpScreenState extends State<OtpScreen>
                             .textTheme
                             .bodyMedium
                             ?.color
-                            ?.withOpacity(0.7),
+                            ?.withValues(alpha: 0.7),
                         height: 1.5,
                       ),
                   textAlign: TextAlign.center,
@@ -228,14 +228,14 @@ class _OtpScreenState extends State<OtpScreen>
                                 counterText: '',
                                 filled: true,
                                 fillColor: _hasError
-                                    ? AppTheme.errorRed.withOpacity(0.08)
-                                    : color.withOpacity(0.06),
+                                    ? AppTheme.errorRed.withValues(alpha: 0.08)
+                                    : color.withValues(alpha: 0.06),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
                                     color: _hasError
                                         ? AppTheme.errorRed
-                                        : color.withOpacity(0.3),
+                                        : color.withValues(alpha: 0.3),
                                     width: 2,
                                   ),
                                 ),
@@ -244,7 +244,7 @@ class _OtpScreenState extends State<OtpScreen>
                                   borderSide: BorderSide(
                                     color: _hasError
                                         ? AppTheme.errorRed
-                                        : color.withOpacity(0.3),
+                                        : color.withValues(alpha: 0.3),
                                     width: 2,
                                   ),
                                 ),

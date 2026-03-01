@@ -168,7 +168,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
                             borderRadius: BorderRadius.circular(32),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 30,
                                 offset: const Offset(0, 10),
                               ),
@@ -440,7 +440,7 @@ Widget _buildTextField({
           prefixIcon: Icon(prefixIcon, size: 22),
           suffixIcon: suffixIcon,
           filled: true,
-          fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+          fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(

@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       },
       child: Card(
         elevation: 2,
-        shadowColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        shadowColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -250,9 +250,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withOpacity(0.2), width: 1.5),
+          border: Border.all(color: color.withValues(alpha: 0.2), width: 1.5),
         ),
         child: Column(
           children: [
@@ -424,9 +424,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.08),
+              color: color.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: color.withOpacity(0.2), width: 1.5),
+              border: Border.all(color: color.withValues(alpha: 0.2), width: 1.5),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -526,7 +526,7 @@ Widget _buildUpcomingEvents(BuildContext context, DataProvider dataProvider, Dat
                 Icon(
                   Icons.check_circle_outline,
                   size: 56,
-                  color: AppTheme.successGreen.withOpacity(0.6),
+                  color: AppTheme.successGreen.withValues(alpha: 0.6),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -616,9 +616,9 @@ Widget _buildUpcomingEvents(BuildContext context, DataProvider dataProvider, Dat
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.12),
+                    color: color.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: color.withOpacity(0.3), width: 1.5),
+                    border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
                   ),
                   child: Icon(
                     AppTheme.getClassificationIcon(event.classification),
@@ -647,9 +647,9 @@ Widget _buildUpcomingEvents(BuildContext context, DataProvider dataProvider, Dat
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
+                color: color.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: color.withOpacity(0.25), width: 1),
+                border: Border.all(color: color.withValues(alpha: 0.25), width: 1),
               ),
               child: Text(
                 event.classification[0].toUpperCase() + event.classification.substring(1),
@@ -677,12 +677,12 @@ Widget _buildUpcomingEvents(BuildContext context, DataProvider dataProvider, Dat
             ),
                           if (event.estimatedDuration != null) ...[
                             const SizedBox(width: 12),
-                            Icon(Icons.timer_outlined, size: 14, color: color.withOpacity(0.7)),
+                            Icon(Icons.timer_outlined, size: 14, color: color.withValues(alpha: 0.7)),
                             const SizedBox(width: 4),
                             Text(
                               event.estimatedDuration!,
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: color.withOpacity(0.7),
+                                color: color.withValues(alpha: 0.7),
                               ),
                             ),
                           ],
@@ -788,7 +788,7 @@ Widget _buildUpcomingEvents(BuildContext context, DataProvider dataProvider, Dat
                               decoration: BoxDecoration(
                                 color: dayEvents.isEmpty
                                     ? Colors.grey[200]
-                                    : AppTheme.primaryBlue.withOpacity(0.1),
+                                    : AppTheme.primaryBlue.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(

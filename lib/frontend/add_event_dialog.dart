@@ -120,18 +120,18 @@ class _AddEventDialogState extends State<AddEventDialog>
       labelStyle: TextStyle(fontSize: 16),
       prefixIcon: Icon(icon, color: color),
       filled: true,
-      fillColor: color.withOpacity(0.05),
+      fillColor: color.withValues(alpha: 0.05),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(
-          color: color.withOpacity(0.3),
+          color: color.withValues(alpha: 0.3),
           width: 2,
         ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(
-          color: color.withOpacity(0.3),
+          color: color.withValues(alpha: 0.3),
           width: 2,
         ),
       ),
@@ -366,7 +366,7 @@ void _saveEvent() async {
                 gradient: LinearGradient(
                   colors: [
                     color,
-                    color.withOpacity(0.8),
+                    color.withValues(alpha: 0.8),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -379,7 +379,7 @@ void _saveEvent() async {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -410,7 +410,7 @@ void _saveEvent() async {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                           ),
                         ),
                       ],
@@ -420,7 +420,7 @@ void _saveEvent() async {
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.close, color: Colors.white),
                     style: IconButton.styleFrom(
-                      backgroundColor: Colors.white.withOpacity(0.2),
+                      backgroundColor: Colors.white.withValues(alpha: 0.2),
                     ),
                   ),
                 ],
@@ -473,10 +473,10 @@ void _saveEvent() async {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.05),
+                color: color.withValues(alpha: 0.05),
                 border: Border(
                   top: BorderSide(
-                    color: color.withOpacity(0.2),
+                    color: color.withValues(alpha: 0.2),
                     width: 1,
                   ),
                 ),
@@ -576,12 +576,12 @@ void _saveEvent() async {
                       }
                     });
                   },
-                  backgroundColor: classColor.withOpacity(0.1),
+                  backgroundColor: classColor.withValues(alpha: 0.1),
                   selectedColor: classColor,
                   side: BorderSide(
                     color: isSelected
                         ? classColor
-                        : classColor.withOpacity(0.3),
+                        : classColor.withValues(alpha: 0.3),
                     width: 2,
                   ),
                   padding: const EdgeInsets.symmetric(
@@ -598,7 +598,7 @@ AppPopupMenuButton<String?>(
   child: Container(
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
     decoration: BoxDecoration(
-      color: color.withOpacity(0.08),
+      color: color.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(12),
     ),
     child: Row(
@@ -762,12 +762,12 @@ AppDropdown<String>(
                 onSelected: (selected) {
                   setState(() => _selectedPriority = priority);
                 },
-                backgroundColor: priorityColor.withOpacity(0.1),
+                backgroundColor: priorityColor.withValues(alpha: 0.1),
                 selectedColor: priorityColor,
                 side: BorderSide(
                   color: isSelected
                       ? priorityColor
-                      : priorityColor.withOpacity(0.3),
+                      : priorityColor.withValues(alpha: 0.3),
                   width: 2,
                 ),
                 padding:
@@ -808,7 +808,7 @@ AppDropdown<String>(
                       icon: const Icon(Icons.remove),
                       style: IconButton.styleFrom(
                         backgroundColor:
-                            color.withOpacity(0.1),
+                            color.withValues(alpha: 0.1),
                       ),
                     ),
                     Expanded(
@@ -819,10 +819,10 @@ AppDropdown<String>(
                             vertical: 12,
                           ),
                           decoration: BoxDecoration(
-                            color: color.withOpacity(0.08),
+                            color: color.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: color.withOpacity(0.3),
+                              color: color.withValues(alpha: 0.3),
                             ),
                           ),
                           child: Text(
@@ -843,7 +843,7 @@ AppDropdown<String>(
                       icon: const Icon(Icons.add),
                       style: IconButton.styleFrom(
                         backgroundColor:
-                            color.withOpacity(0.1),
+                            color.withValues(alpha: 0.1),
                       ),
                     ),
                   ],
@@ -855,10 +855,10 @@ AppDropdown<String>(
 
           Container(
             decoration: BoxDecoration(
-              color: color.withOpacity(0.08),
+              color: color.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: color.withOpacity(0.2),
+                color: color.withValues(alpha: 0.2),
                 width: 2,
               ),
             ),
@@ -884,7 +884,7 @@ AppDropdown<String>(
                   Column(
                     children: [
                       Divider(
-                        color: color.withOpacity(0.2),
+                        color: color.withValues(alpha: 0.2),
                         height: 1,
                       ),
                       SwitchListTile(
@@ -945,13 +945,13 @@ AppDropdown<String>(
                 margin: const EdgeInsets.only(bottom: 12),
                 decoration: BoxDecoration(
                   color: isPast
-                      ? AppTheme.errorRed.withOpacity(0.05)
-                      : color.withOpacity(0.08),
+                      ? AppTheme.errorRed.withValues(alpha: 0.05)
+                      : color.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: isPast
-                        ? AppTheme.errorRed.withOpacity(0.3)
-                        : color.withOpacity(0.2),
+                        ? AppTheme.errorRed.withValues(alpha: 0.3)
+                        : color.withValues(alpha: 0.2),
                     width: 2,
                   ),
                 ),
@@ -960,8 +960,8 @@ AppDropdown<String>(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: isPast
-                          ? AppTheme.errorRed.withOpacity(0.15)
-                          : color.withOpacity(0.2),
+                          ? AppTheme.errorRed.withValues(alpha: 0.15)
+                          : color.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
@@ -985,7 +985,7 @@ AppDropdown<String>(
                           'This reminder has already passed',
                           style: TextStyle(
                             fontSize: 12,
-                            color: AppTheme.errorRed.withOpacity(0.8),
+                            color: AppTheme.errorRed.withValues(alpha: 0.8),
                           ),
                         )
                       : null,
@@ -1051,10 +1051,10 @@ AppDropdown<String>(
               margin: const EdgeInsets.only(top: 32),
               padding: const EdgeInsets.all(48),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.05),
+                color: color.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: color.withOpacity(0.2),
+                  color: color.withValues(alpha: 0.2),
                   width: 2,
                 ),
               ),
@@ -1064,7 +1064,7 @@ AppDropdown<String>(
                     Icon(
                       Icons.mic_none,
                       size: 64,
-                      color: color.withOpacity(0.4),
+                      color: color.withValues(alpha: 0.4),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -1072,7 +1072,7 @@ AppDropdown<String>(
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: color.withOpacity(0.7),
+                        color: color.withValues(alpha: 0.7),
                       ),
                     ),
                     const SizedBox(height: 8),

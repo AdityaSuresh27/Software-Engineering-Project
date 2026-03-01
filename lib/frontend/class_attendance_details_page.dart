@@ -78,12 +78,12 @@ class ClassAttendanceDetailsPage extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [color, color.withOpacity(0.8)],
+                    colors: [color, color.withValues(alpha: 0.8)],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: color.withOpacity(0.3),
+                      color: color.withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -118,7 +118,7 @@ class ClassAttendanceDetailsPage extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: stats.attendancePercentage / 100,
                         minHeight: 8,
-                        backgroundColor: Colors.white.withOpacity(0.3),
+                        backgroundColor: Colors.white.withValues(alpha: 0.3),
                         valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     ),
@@ -201,7 +201,7 @@ class ClassAttendanceDetailsPage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
@@ -218,7 +218,7 @@ class ClassAttendanceDetailsPage extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 11,
-            color: Colors.white.withOpacity(0.9),
+            color: Colors.white.withValues(alpha: 0.9),
           ),
         ),
       ],
@@ -233,7 +233,7 @@ class ClassAttendanceDetailsPage extends StatelessWidget {
           Icon(
             icon,
             size: 64,
-            color: color.withOpacity(0.3),
+            color: color.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 16),
           Text(
@@ -241,7 +241,7 @@ class ClassAttendanceDetailsPage extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: color.withOpacity(0.7),
+              color: color.withValues(alpha: 0.7),
             ),
           ),
         ],
@@ -266,7 +266,7 @@ Widget _buildRecordCard(
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.1),
+              color: statusColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: statusColor, width: 2),
             ),
@@ -289,9 +289,9 @@ Widget _buildRecordCard(
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.1),
+                        color: statusColor.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: statusColor.withOpacity(0.3)),
+                        border: Border.all(color: statusColor.withValues(alpha: 0.3)),
                       ),
                       child: Text(
                         record.status.toString().split('.').last.toUpperCase(),
@@ -316,7 +316,7 @@ Widget _buildRecordCard(
           ),
 AppPopupMenuButton<String>(
   iconData: Icons.more_vert_rounded,
-  backgroundColor: color.withOpacity(0.08),
+  backgroundColor: color.withValues(alpha: 0.08),
   iconColor: color,
   iconSize: 18,
   onSelected: (value) {
@@ -386,7 +386,7 @@ void _showUnmarkConfirmation(
           Container(
             padding: const EdgeInsets.all(9),
             decoration: BoxDecoration(
-              color: AppTheme.warningAmber.withOpacity(0.1),
+              color: AppTheme.warningAmber.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(11),
             ),
             child: Icon(Icons.warning_rounded, color: AppTheme.warningAmber, size: 22),
@@ -451,9 +451,9 @@ void _showUnmarkConfirmation(
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: color.withOpacity(0.3), width: 2),
+                border: Border.all(color: color.withValues(alpha: 0.3), width: 2),
               ),
               child: Icon(Icons.event, color: color, size: 24),
             ),
@@ -560,9 +560,9 @@ void _showMarkAttendanceDialog(
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: statusColor.withOpacity(0.3), width: 2),
+                  border: Border.all(color: statusColor.withValues(alpha: 0.3), width: 2),
                 ),
                 child: Row(
                   children: [
@@ -643,8 +643,8 @@ void _showEditAttendanceDialog(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: isSelected 
-                      ? statusColor.withOpacity(0.15)
-                      : statusColor.withOpacity(0.08),
+                      ? statusColor.withValues(alpha: 0.15)
+                      : statusColor.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: statusColor,

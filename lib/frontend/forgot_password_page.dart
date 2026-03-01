@@ -117,13 +117,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
                 end: Alignment.bottomRight,
                 colors: [
                   AppTheme.primaryBlue,
-                  AppTheme.primaryBlue.withOpacity(0.7),
+                  AppTheme.primaryBlue.withValues(alpha: 0.7),
                 ],
               ),
               borderRadius: BorderRadius.circular(30),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.primaryBlue.withOpacity(0.3),
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.3),
                   blurRadius: 30,
                   offset: const Offset(0, 10),
                 ),
@@ -159,7 +159,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
                       .textTheme
                       .bodyMedium
                       ?.color
-                      ?.withOpacity(0.7),
+                      ?.withValues(alpha: 0.7),
                 ),
             textAlign: TextAlign.center,
           ),
@@ -181,7 +181,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
                 fillColor: Theme.of(context)
                     .colorScheme
                     .surfaceContainerHighest
-                    .withOpacity(0.5),
+                    .withValues(alpha: 0.5),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
@@ -313,13 +313,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
               end: Alignment.bottomRight,
               colors: [
                 AppTheme.successGreen,
-                AppTheme.successGreen.withOpacity(0.7),
+                AppTheme.successGreen.withValues(alpha: 0.7),
               ],
             ),
             borderRadius: BorderRadius.circular(30),
             boxShadow: [
               BoxShadow(
-                color: AppTheme.successGreen.withOpacity(0.3),
+                color: AppTheme.successGreen.withValues(alpha: 0.3),
                 blurRadius: 30,
                 offset: const Offset(0, 10),
               ),
@@ -355,7 +355,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
                     .textTheme
                     .bodyMedium
                     ?.color
-                    ?.withOpacity(0.7),
+                    ?.withValues(alpha: 0.7),
               ),
           textAlign: TextAlign.center,
         ),
@@ -365,10 +365,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: AppTheme.successGreen.withOpacity(0.08),
+            color: AppTheme.successGreen.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: AppTheme.successGreen.withOpacity(0.2),
+              color: AppTheme.successGreen.withValues(alpha: 0.2),
               width: 1.5,
             ),
           ),
@@ -393,7 +393,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
             color: Theme.of(context)
                 .colorScheme
                 .surfaceContainerHighest
-                .withOpacity(0.3),
+                .withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: Theme.of(context).dividerColor,
@@ -496,7 +496,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              color: AppTheme.primaryBlue.withOpacity(0.1),
+              color: AppTheme.primaryBlue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Center(

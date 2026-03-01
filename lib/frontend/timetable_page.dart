@@ -61,7 +61,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                           end: Alignment.bottomRight,
                           colors: [
                             AppTheme.primaryBlue,
-                            AppTheme.primaryBlue.withOpacity(0.88),
+                            AppTheme.primaryBlue.withValues(alpha: 0.88),
                           ],
                         ),
                       ),
@@ -76,7 +76,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                               height: 220,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.white.withOpacity(0.04),
+                                color: Colors.white.withValues(alpha: 0.04),
                               ),
                             ),
                           ),
@@ -88,7 +88,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                               height: 150,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.white.withOpacity(0.03),
+                                color: Colors.white.withValues(alpha: 0.03),
                               ),
                             ),
                           ),
@@ -106,7 +106,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                                       icon: Container(
                                         padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.15),
+                                          color: Colors.white.withValues(alpha: 0.15),
                                           borderRadius: BorderRadius.circular(12),
                                         ),
                                         child: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 20),
@@ -134,10 +134,10 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                                         Container(
                                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                           decoration: BoxDecoration(
-                                            color: Colors.white.withOpacity(0.18),
+                                            color: Colors.white.withValues(alpha: 0.18),
                                             borderRadius: BorderRadius.circular(20),
                                             border: Border.all(
-                                              color: Colors.white.withOpacity(0.25),
+                                              color: Colors.white.withValues(alpha: 0.25),
                                               width: 1,
                                             ),
                                           ),
@@ -146,14 +146,14 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                                             children: [
                                               Icon(
                                                 Icons.class_rounded,
-                                                color: Colors.white.withOpacity(0.95),
+                                                color: Colors.white.withValues(alpha: 0.95),
                                                 size: 15,
                                               ),
                                               const SizedBox(width: 6),
                                               Text(
                                                 '${dataProvider.timetableEntries.length} ${dataProvider.timetableEntries.length == 1 ? 'class' : 'classes'} this week',
                                                 style: TextStyle(
-                                                  color: Colors.white.withOpacity(0.95),
+                                                  color: Colors.white.withValues(alpha: 0.95),
                                                   fontSize: 12.5,
                                                   fontWeight: FontWeight.w600,
                                                   letterSpacing: 0.2,
@@ -180,7 +180,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                         icon: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
+                            color: Colors.white.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(Icons.bar_chart_rounded, color: Colors.white, size: 20),
@@ -231,7 +231,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                         color: AppTheme.primaryBlue,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                            color: Colors.black.withValues(alpha: 0.08),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -241,7 +241,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                         controller: _tabController,
                         isScrollable: false,
                         labelColor: Colors.white,
-                        unselectedLabelColor: Colors.white.withOpacity(0.45),
+                        unselectedLabelColor: Colors.white.withValues(alpha: 0.45),
                         indicatorColor: Colors.white,
                         indicatorWeight: 3,
                         indicatorSize: TabBarIndicatorSize.label,
@@ -279,7 +279,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.primaryBlue.withOpacity(0.35),
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.35),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -321,7 +321,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppTheme.primaryBlue.withOpacity(0.02),
+              AppTheme.primaryBlue.withValues(alpha: 0.02),
               Colors.transparent,
             ],
             stops: const [0.0, 0.4],
@@ -336,8 +336,8 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                 decoration: BoxDecoration(
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.primaryBlue.withOpacity(0.08),
-                      AppTheme.primaryBlue.withOpacity(0.02),
+                      AppTheme.primaryBlue.withValues(alpha: 0.08),
+                      AppTheme.primaryBlue.withValues(alpha: 0.02),
                     ],
                   ),
                   shape: BoxShape.circle,
@@ -345,7 +345,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                 child: Icon(
                   Icons.event_busy_rounded,
                   size: 64,
-                  color: AppTheme.primaryBlue.withOpacity(0.32),
+                  color: AppTheme.primaryBlue.withValues(alpha: 0.32),
                 ),
               ),
               const SizedBox(height: 20),
@@ -355,7 +355,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                   fontWeight: FontWeight.w700,
                   fontSize: 18,
                   letterSpacing: -0.2,
-                  color: Theme.of(context).textTheme.titleLarge?.color?.withOpacity(0.75),
+                  color: Theme.of(context).textTheme.titleLarge?.color?.withValues(alpha: 0.75),
                 ),
               ),
               const SizedBox(height: 8),
@@ -363,7 +363,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                 'Tap the + button to add a class',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontSize: 13.5,
-                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                 ),
               ),
             ],
@@ -378,7 +378,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppTheme.primaryBlue.withOpacity(0.02),
+            AppTheme.primaryBlue.withValues(alpha: 0.02),
             Colors.transparent,
           ],
           stops: const [0.0, 0.3],
@@ -429,7 +429,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
       child: Card(
         margin: const EdgeInsets.only(bottom: 14),
         elevation: 1.5,
-        shadowColor: color.withOpacity(0.15),
+        shadowColor: color.withValues(alpha: 0.15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
         ),
@@ -448,12 +448,12 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  color.withOpacity(0.03),
-                  color.withOpacity(0.01),
+                  color.withValues(alpha: 0.03),
+                  color.withValues(alpha: 0.01),
                 ],
               ),
               border: Border.all(
-                color: color.withOpacity(0.12),
+                color: color.withValues(alpha: 0.12),
                 width: 1.2,
               ),
             ),
@@ -467,8 +467,8 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        color.withOpacity(0.07),
-                        color.withOpacity(0.03),
+                        color.withValues(alpha: 0.07),
+                        color.withValues(alpha: 0.03),
                       ],
                     ),
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
@@ -484,13 +484,13 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                             end: Alignment.bottomRight,
                             colors: [
                               color,
-                              color.withOpacity(0.85),
+                              color.withValues(alpha: 0.85),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: color.withOpacity(0.3),
+                              color: color.withValues(alpha: 0.3),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -513,7 +513,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                               height: 2,
                               margin: const EdgeInsets.symmetric(vertical: 5),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.6),
+                                color: Colors.white.withValues(alpha: 0.6),
                                 borderRadius: BorderRadius.circular(1),
                               ),
                             ),
@@ -522,7 +522,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.white.withOpacity(0.95),
+                                color: Colors.white.withValues(alpha: 0.95),
                                 letterSpacing: -0.1,
                                 height: 1,
                               ),
@@ -551,10 +551,10 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: color.withOpacity(0.11),
+                                  color: color.withValues(alpha: 0.11),
                                   borderRadius: BorderRadius.circular(7),
                                   border: Border.all(
-                                    color: color.withOpacity(0.22),
+                                    color: color.withValues(alpha: 0.22),
                                     width: 1,
                                   ),
                                 ),
@@ -584,13 +584,13 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                               end: Alignment.bottomRight,
                               colors: [
                                 _getAttendanceColor(attendance.status),
-                                _getAttendanceColor(attendance.status).withOpacity(0.85),
+                                _getAttendanceColor(attendance.status).withValues(alpha: 0.85),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(11),
                             boxShadow: [
                               BoxShadow(
-                                color: _getAttendanceColor(attendance.status).withOpacity(0.3),
+                                color: _getAttendanceColor(attendance.status).withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -607,7 +607,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                       AppPopupMenuButton<String>(
                         iconData: Icons.more_vert_rounded,
                         iconColor: color,
-                        backgroundColor: color.withOpacity(0.08),
+                        backgroundColor: color.withValues(alpha: 0.08),
                         iconSize: 18,
                         itemBuilder: (context) => [
                           const PopupMenuItem(
@@ -657,7 +657,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: color.withOpacity(0.1),
+                              color: color.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(9),
                             ),
                             child: Icon(Icons.schedule_rounded, size: 16, color: color),
@@ -668,13 +668,13 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  color.withOpacity(0.11),
-                                  color.withOpacity(0.07),
+                                  color.withValues(alpha: 0.11),
+                                  color.withValues(alpha: 0.07),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                color: color.withOpacity(0.18),
+                                color: color.withValues(alpha: 0.18),
                                 width: 1.2,
                               ),
                             ),
@@ -697,10 +697,10 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                         Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.35),
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
                               width: 1,
                             ),
                           ),
@@ -712,7 +712,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                                     Container(
                                       padding: const EdgeInsets.all(6),
                                       decoration: BoxDecoration(
-                                        color: color.withOpacity(0.1),
+                                        color: color.withValues(alpha: 0.1),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Icon(
@@ -742,7 +742,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
                                     Container(
                                       padding: const EdgeInsets.all(6),
                                       decoration: BoxDecoration(
-                                        color: color.withOpacity(0.1),
+                                        color: color.withValues(alpha: 0.1),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Icon(
@@ -790,7 +790,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
             Container(
               padding: const EdgeInsets.all(9),
               decoration: BoxDecoration(
-                color: AppTheme.errorRed.withOpacity(0.1),
+                color: AppTheme.errorRed.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(11),
               ),
               child: Icon(Icons.delete_rounded, color: AppTheme.errorRed, size: 22),
@@ -903,7 +903,7 @@ class _TimetablePageState extends State<TimetablePage> with SingleTickerProvider
             Container(
               padding: const EdgeInsets.all(9),
               decoration: BoxDecoration(
-                color: AppTheme.errorRed.withOpacity(0.1),
+                color: AppTheme.errorRed.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(11),
               ),
               child: Icon(Icons.warning_rounded, color: AppTheme.errorRed, size: 22),

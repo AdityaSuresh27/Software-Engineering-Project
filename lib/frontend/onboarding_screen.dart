@@ -127,7 +127,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             width: 100,
             height: 100,
             decoration: BoxDecoration(
-              color: page.color.withOpacity(0.1),
+              color: page.color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Icon(
@@ -162,7 +162,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       decoration: BoxDecoration(
         color: _currentPage == index
             ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            : Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(4),
       ),
     );

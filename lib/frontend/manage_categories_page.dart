@@ -112,7 +112,7 @@ class _ManageCategoriesPageState extends State<ManageCategoriesPage> {
       Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppTheme.accentPurple.withOpacity(0.1),
+          color: AppTheme.accentPurple.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(
@@ -144,7 +144,7 @@ class _ManageCategoriesPageState extends State<ManageCategoriesPage> {
                         color: Theme.of(context)
                             .colorScheme
                             .primary
-                            .withOpacity(0.3),
+                            .withValues(alpha: 0.3),
                       ),
                       const SizedBox(height: 16),
                       Text(

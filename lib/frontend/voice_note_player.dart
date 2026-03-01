@@ -122,7 +122,7 @@ class _VoiceNotePlayerState extends State<VoiceNotePlayer> {
                     _isPlaying ? Icons.pause : Icons.play_arrow,
                   ),
                   style: IconButton.styleFrom(
-                    backgroundColor: primaryColor.withOpacity(0.1),
+                    backgroundColor: primaryColor.withValues(alpha: 0.1),
                     foregroundColor: primaryColor,
                   ),
                 ),
@@ -141,7 +141,7 @@ class _VoiceNotePlayerState extends State<VoiceNotePlayer> {
                           value: _currentPosition.inSeconds.toDouble(),
                           max: _duration.inSeconds.toDouble(),
                           activeColor: primaryColor,
-                          inactiveColor: primaryColor.withOpacity(0.3),
+                          inactiveColor: primaryColor.withValues(alpha: 0.3),
                           onChanged: (value) async {
                             final position = Duration(seconds: value.toInt());
                             await _audioPlayer.seek(position);
@@ -191,9 +191,9 @@ class _VoiceNotePlayerState extends State<VoiceNotePlayer> {
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: primaryColor.withOpacity(0.1),
+                      color: primaryColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: primaryColor.withOpacity(0.3)),
+                      border: Border.all(color: primaryColor.withValues(alpha: 0.3)),
                     ),
                     child: Text(
                       tag,

@@ -35,7 +35,7 @@ class _AttendancePageState extends State<AttendancePage> {
       Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppTheme.successGreen.withOpacity(0.1),
+          color: AppTheme.successGreen.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(
@@ -87,7 +87,7 @@ class _AttendancePageState extends State<AttendancePage> {
                       Icon(
                         Icons.event_busy_outlined,
                         size: 64,
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -114,13 +114,13 @@ class _AttendancePageState extends State<AttendancePage> {
                           gradient: LinearGradient(
                             colors: [
                               AppTheme.primaryBlue,
-                              AppTheme.primaryBlue.withOpacity(0.8),
+                              AppTheme.primaryBlue.withValues(alpha: 0.8),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.primaryBlue.withOpacity(0.3),
+                              color: AppTheme.primaryBlue.withValues(alpha: 0.3),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -216,7 +216,7 @@ class _AttendancePageState extends State<AttendancePage> {
                     '${withLatePercentage.toStringAsFixed(1)}% with late',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                     ),
                   ),
               ],
@@ -229,7 +229,7 @@ class _AttendancePageState extends State<AttendancePage> {
           child: LinearProgressIndicator(
             value: percentage / 100,
             minHeight: 8,
-            backgroundColor: Colors.white.withOpacity(0.3),
+            backgroundColor: Colors.white.withValues(alpha: 0.3),
             valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
           ),
         ),
@@ -241,14 +241,14 @@ class _AttendancePageState extends State<AttendancePage> {
               '$totalPresent / $totalClasses classes attended',
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha: 0.9),
               ),
             ),
             Text(
               '${allStats.length} subjects',
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha: 0.9),
               ),
             ),
           ],
@@ -273,7 +273,7 @@ class _AttendancePageState extends State<AttendancePage> {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
-      shadowColor: color.withOpacity(0.2),
+      shadowColor: color.withValues(alpha: 0.2),
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -356,7 +356,7 @@ class _AttendancePageState extends State<AttendancePage> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: _getPercentageColor(stats.attendancePercentage).withOpacity(0.1),
+                    color: _getPercentageColor(stats.attendancePercentage).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: _getPercentageColor(stats.attendancePercentage),
@@ -387,7 +387,7 @@ class _AttendancePageState extends State<AttendancePage> {
               const SizedBox(width: 8),
               Icon(
                 Icons.chevron_right,
-                color: color.withOpacity(0.5),
+                color: color.withValues(alpha: 0.5),
               ),
             ],
           ),
@@ -400,9 +400,9 @@ class _AttendancePageState extends State<AttendancePage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         label,

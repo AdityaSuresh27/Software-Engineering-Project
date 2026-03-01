@@ -448,7 +448,7 @@ class _TopNotificationBannerState extends State<_TopNotificationBanner>
           opacity: _fade,
           child: Material(
             elevation: 8,
-            shadowColor: widget.backgroundColor.withOpacity(0.4),
+            shadowColor: widget.backgroundColor.withValues(alpha: 0.4),
             borderRadius: BorderRadius.circular(16),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -474,7 +474,7 @@ class _TopNotificationBannerState extends State<_TopNotificationBanner>
                   GestureDetector(
                     onTap: _dismiss,
                     child: Icon(Icons.close_rounded,
-                        color: widget.foregroundColor.withOpacity(0.8), size: 20),
+                        color: widget.foregroundColor.withValues(alpha: 0.8), size: 20),
                   ),
                 ],
               ),
@@ -525,14 +525,14 @@ class AppDropdown<T> extends StatelessWidget {
         labelStyle: const TextStyle(fontSize: 15),
         prefixIcon: Icon(prefixIcon, color: color),
         filled: true,
-        fillColor: color.withOpacity(0.05),
+        fillColor: color.withValues(alpha: 0.05),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: color.withOpacity(0.3), width: 1.8),
+          borderSide: BorderSide(color: color.withValues(alpha: 0.3), width: 1.8),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: color.withOpacity(0.3), width: 1.8),
+          borderSide: BorderSide(color: color.withValues(alpha: 0.3), width: 1.8),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),

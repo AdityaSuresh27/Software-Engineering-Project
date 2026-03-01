@@ -77,7 +77,7 @@ class _TimelinePageState extends State<TimelinePage> {
       Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppTheme.meetingTeal.withOpacity(0.1),
+          color: AppTheme.meetingTeal.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(
@@ -194,7 +194,7 @@ class _TimelinePageState extends State<TimelinePage> {
                 width: 2,
                 height: hasItems ? (events.length * 110.0) : 70,
                 color: isCurrentHour 
-                    ? Theme.of(context).colorScheme.primary.withOpacity(0.3)
+                    ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)
                     : Theme.of(context).dividerColor,
               ),
           ],
@@ -257,15 +257,15 @@ class _TimelinePageState extends State<TimelinePage> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              color.withOpacity(0.1),
-              color.withOpacity(0.05),
+              color.withValues(alpha: 0.1),
+              color.withValues(alpha: 0.05),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isCurrentHour ? color : color.withOpacity(0.3),
+            color: isCurrentHour ? color : color.withValues(alpha: 0.3),
             width: isCurrentHour ? 2 : 1,
           ),
         ),
@@ -277,7 +277,7 @@ class _TimelinePageState extends State<TimelinePage> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.2),
+                    color: color.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Row(

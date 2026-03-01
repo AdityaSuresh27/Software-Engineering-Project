@@ -54,7 +54,7 @@ class _EventsPageState extends State<EventsPage> {
       Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppTheme.assignmentPurple.withOpacity(0.1),
+          color: AppTheme.assignmentPurple.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(
@@ -102,7 +102,7 @@ class _EventsPageState extends State<EventsPage> {
                             Icon(
                               Icons.event_note,
                               size: 64,
-                              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                             ),
                             const SizedBox(height: 16),
                             Text(
@@ -257,7 +257,7 @@ class _EventsPageState extends State<EventsPage> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: color.withOpacity(0.1),
+                        color: color.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
@@ -344,9 +344,9 @@ class _EventsPageState extends State<EventsPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         label,
@@ -390,3 +390,4 @@ class _EventsPageState extends State<EventsPage> {
     );
   }
 }
+

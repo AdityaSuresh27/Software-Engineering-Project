@@ -123,7 +123,7 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
           startTime: _startTime,
           endTime: endTime,
           category: _selectedCategory,
-          color: '#${_selectedColor.value.toRadixString(16).substring(2)}',
+          color: '#${_selectedColor.toARGB32().toRadixString(16).substring(2)}',
           semesterStart: _semesterStart,
           semesterEnd: _semesterEnd,
           periodCount: _periodCount,
@@ -180,7 +180,7 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
                 startTime: _startTime,
                 endTime: endTime,
                 category: _selectedCategory,
-                color: '#${_selectedColor.value.toRadixString(16).substring(2)}',
+                color: '#${_selectedColor.toARGB32().toRadixString(16).substring(2)}',
                 semesterStart: _semesterStart,
                 semesterEnd: _semesterEnd,
                 excludedDates: widget.editEntry!.excludedDates,
@@ -227,7 +227,7 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [_selectedColor, _selectedColor.withOpacity(0.8)],
+                  colors: [_selectedColor, _selectedColor.withValues(alpha: 0.8)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -238,7 +238,7 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(Icons.calendar_view_week, color: Colors.white, size: 28),
@@ -258,7 +258,7 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.close, color: Colors.white),
                     style: IconButton.styleFrom(
-                      backgroundColor: Colors.white.withOpacity(0.2),
+                      backgroundColor: Colors.white.withValues(alpha: 0.2),
                     ),
                   ),
                 ],
@@ -329,11 +329,11 @@ class _AddTimetableDialogState extends State<AddTimetableDialog> {
                                 }
                               });
                             },
-                            backgroundColor: _selectedColor.withOpacity(0.1),
-                            selectedColor: _selectedColor.withOpacity(0.3),
+                            backgroundColor: _selectedColor.withValues(alpha: 0.1),
+                            selectedColor: _selectedColor.withValues(alpha: 0.3),
                             checkmarkColor: _selectedColor,
                             side: BorderSide(
-                              color: isSelected ? _selectedColor : _selectedColor.withOpacity(0.3),
+                              color: isSelected ? _selectedColor : _selectedColor.withValues(alpha: 0.3),
                               width: 1.5,
                             ),
                           );
@@ -378,10 +378,10 @@ AppDropdown<int>(
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: _selectedColor.withOpacity(0.08),
+                          color: _selectedColor.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: _selectedColor.withOpacity(0.3),
+                            color: _selectedColor.withValues(alpha: 0.3),
                             width: 1.5,
                           ),
                         ),
@@ -408,7 +408,7 @@ AppPopupMenuButton<String?>(
   child: Container(
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
     decoration: BoxDecoration(
-      color: _selectedColor.withOpacity(0.08),
+      color: _selectedColor.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(12),
     ),
     child: Row(
@@ -539,10 +539,10 @@ AppPopupMenuButton<String?>(
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: _selectedColor.withOpacity(0.08),
+                          color: _selectedColor.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: _selectedColor.withOpacity(0.3),
+                            color: _selectedColor.withValues(alpha: 0.3),
                             width: 1,
                           ),
                         ),
@@ -588,7 +588,7 @@ AppPopupMenuButton<String?>(
                                           : null,
                                       icon: const Icon(Icons.remove),
                                       style: IconButton.styleFrom(
-                                        backgroundColor: _selectedColor.withOpacity(0.1),
+                                        backgroundColor: _selectedColor.withValues(alpha: 0.1),
                                       ),
                                     ),
                                     Expanded(
@@ -607,7 +607,7 @@ AppPopupMenuButton<String?>(
                                           setState(() => _periodCount++),
                                       icon: const Icon(Icons.add),
                                       style: IconButton.styleFrom(
-                                        backgroundColor: _selectedColor.withOpacity(0.1),
+                                        backgroundColor: _selectedColor.withValues(alpha: 0.1),
                                       ),
                                     ),
                                   ],
@@ -673,9 +673,9 @@ AppPopupMenuButton<String?>(
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: _selectedColor.withOpacity(0.05),
+                color: _selectedColor.withValues(alpha: 0.05),
                 border: Border(
-                  top: BorderSide(color: _selectedColor.withOpacity(0.2)),
+                  top: BorderSide(color: _selectedColor.withValues(alpha: 0.2)),
                 ),
                 borderRadius: const BorderRadius.vertical(bottom: Radius.circular(24)),
               ),
@@ -708,14 +708,14 @@ AppPopupMenuButton<String?>(
       labelText: label,
       prefixIcon: Icon(icon, color: _selectedColor),
       filled: true,
-      fillColor: _selectedColor.withOpacity(0.05),
+      fillColor: _selectedColor.withValues(alpha: 0.05),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: _selectedColor.withOpacity(0.3)),
+        borderSide: BorderSide(color: _selectedColor.withValues(alpha: 0.3)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: _selectedColor.withOpacity(0.3)),
+        borderSide: BorderSide(color: _selectedColor.withValues(alpha: 0.3)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),

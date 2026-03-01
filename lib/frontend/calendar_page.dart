@@ -57,7 +57,7 @@ class _CalendarPageState extends State<CalendarPage> {
       Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppTheme.primaryBlue.withOpacity(0.1),
+          color: AppTheme.primaryBlue.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(
@@ -124,7 +124,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   },
                   calendarStyle: CalendarStyle(
                     todayDecoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                       shape: BoxShape.circle,
                     ),
                     selectedDecoration: BoxDecoration(
@@ -178,7 +178,7 @@ class _CalendarPageState extends State<CalendarPage> {
             Icon(
               Icons.event_available_outlined,
               size: 64,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
             ),
             const SizedBox(height: 16),
             Text(
@@ -237,7 +237,7 @@ class _CalendarPageState extends State<CalendarPage> {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Stack(
@@ -293,9 +293,9 @@ class _CalendarPageState extends State<CalendarPage> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: color.withOpacity(0.1),
+                            color: color.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: color.withOpacity(0.3)),
+                            border: Border.all(color: color.withValues(alpha: 0.3)),
                           ),
                           child: Text(
                             event.classification[0].toUpperCase() + event.classification.substring(1),
@@ -314,7 +314,7 @@ class _CalendarPageState extends State<CalendarPage> {
               AppPopupMenuButton<String>(
                 iconData: Icons.more_vert,
                 iconColor: color,
-                backgroundColor: color.withOpacity(0.08),
+                backgroundColor: color.withValues(alpha: 0.08),
                 iconSize: 18,
                 onSelected: (value) {
                   if (value == 'edit') {

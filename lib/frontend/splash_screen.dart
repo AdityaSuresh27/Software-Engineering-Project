@@ -350,8 +350,8 @@ class _SplashScreenState extends State<SplashScreen>
                                     shape: BoxShape.circle,
                                     gradient: RadialGradient(
                                       colors: [
-                                        Colors.white.withOpacity(0.15),
-                                        Colors.white.withOpacity(0.0),
+                                        Colors.white.withValues(alpha: 0.15),
+                                        Colors.white.withValues(alpha: 0.0),
                                       ],
                                     ),
                                   ),
@@ -364,7 +364,7 @@ class _SplashScreenState extends State<SplashScreen>
                                     shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.white.withOpacity(0.18),
+                                        color: Colors.white.withValues(alpha: 0.18),
                                         blurRadius: _glowRadius.value,
                                         spreadRadius: 8,
                                       ),
@@ -380,12 +380,12 @@ class _SplashScreenState extends State<SplashScreen>
                                     borderRadius: BorderRadius.circular(40),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withOpacity(0.25),
+                                        color: Colors.black.withValues(alpha: 0.25),
                                         blurRadius: 40,
                                         offset: const Offset(0, 16),
                                       ),
                                       BoxShadow(
-                                        color: Colors.white.withOpacity(0.2),
+                                        color: Colors.white.withValues(alpha: 0.2),
                                         blurRadius: 20,
                                         spreadRadius: -4,
                                       ),
@@ -439,7 +439,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   height: 1.0,
                                   shadows: [
                                     Shadow(
-                                      color: Colors.black.withOpacity(0.3),
+                                      color: Colors.black.withValues(alpha: 0.3),
                                       blurRadius: 12,
                                       offset: const Offset(0, 4),
                                     ),
@@ -527,8 +527,8 @@ class _SplashScreenState extends State<SplashScreen>
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  Colors.white.withOpacity(opacity),
-                  Colors.white.withOpacity(0.0),
+                  Colors.white.withValues(alpha: opacity),
+                  Colors.white.withValues(alpha: 0.0),
                 ],
               ),
             ),
@@ -569,7 +569,7 @@ class _ParticlePainter extends CustomPainter {
       final y = (1.0 - t) * size.height * 0.8 + size.height * 0.1;
       final opacity = math.sin(t * math.pi) * 0.5;
 
-      paint.color = Colors.white.withOpacity(opacity);
+      paint.color = Colors.white.withValues(alpha: opacity);
       canvas.drawCircle(Offset(x, y), p.size, paint);
     }
   }

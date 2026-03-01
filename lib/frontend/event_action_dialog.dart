@@ -10,6 +10,9 @@ import '../backend/timetable_models.dart';
 import 'theme.dart';
 import 'add_event_dialog.dart';
 
+// Const SizedBox instances to avoid repeated allocation
+const _sizedBoxWidth16 = SizedBox(width: 16);
+
 class EventActionDialog extends StatelessWidget {
   final Event event;
 
@@ -26,6 +29,12 @@ class EventActionDialog extends StatelessWidget {
         ? Color(int.parse(event.completionColor!.replaceFirst('#', '0xFF')))
         : AppTheme.getClassificationColor(event.classification);
 
+    // Cache opacity colors to avoid repeated withValues() calls
+    final c05 = color.withValues(alpha: 0.05);
+    final c1 = color.withValues(alpha: 0.1);
+    final c15 = color.withValues(alpha: 0.15);
+    final c3 = color.withValues(alpha: 0.3);
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       insetPadding: const EdgeInsets.all(16),
@@ -38,7 +47,7 @@ class EventActionDialog extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [color.withOpacity(0.15), color.withOpacity(0.05)],
+                  colors: [c15, c05],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -59,7 +68,7 @@ class EventActionDialog extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: color.withOpacity(0.3),
+                              color: c3,
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -71,7 +80,7 @@ class EventActionDialog extends StatelessWidget {
                           size: 24,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      _sizedBoxWidth16,
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +98,7 @@ class EventActionDialog extends StatelessWidget {
                             Text(
                               DateFormat('MMM d, h:mm a').format(event.startTime),
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.8),
+                                color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.8),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -100,7 +109,7 @@ class EventActionDialog extends StatelessWidget {
                         onPressed: () => Navigator.pop(context),
                         icon: Icon(Icons.close, color: color),
                         style: IconButton.styleFrom(
-                          backgroundColor: color.withOpacity(0.1),
+                          backgroundColor: c1,
                         ),
                       ),
                     ],
@@ -212,10 +221,10 @@ class EventActionDialog extends StatelessWidget {
                               width: double.infinity,
                               padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
-                                color: color.withOpacity(0.06),
+                                color: color.withValues(alpha: 0.06),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: color.withOpacity(0.25),
+                                  color: color.withValues(alpha: 0.25),
                                   width: 1,
                                 ),
                               ),
@@ -282,7 +291,7 @@ class EventActionDialog extends StatelessWidget {
             // Divider
             Container(
               height: 1,
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withValues(alpha: 0.2),
             ),
 
             // Actions at bottom
@@ -337,13 +346,13 @@ class EventActionDialog extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppTheme.warningAmber.withOpacity(0.2),
-                AppTheme.warningAmber.withOpacity(0.1),
+                AppTheme.warningAmber.withValues(alpha: 0.2),
+                AppTheme.warningAmber.withValues(alpha: 0.1),
               ],
             ),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: AppTheme.warningAmber.withOpacity(0.4),
+              color: AppTheme.warningAmber.withValues(alpha: 0.4),
               width: 1,
             ),
           ),
@@ -372,13 +381,13 @@ class EventActionDialog extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppTheme.successGreen.withOpacity(0.2),
-                AppTheme.successGreen.withOpacity(0.1),
+                AppTheme.successGreen.withValues(alpha: 0.2),
+                AppTheme.successGreen.withValues(alpha: 0.1),
               ],
             ),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: AppTheme.successGreen.withOpacity(0.4),
+              color: AppTheme.successGreen.withValues(alpha: 0.4),
               width: 1,
             ),
           ),
@@ -441,7 +450,7 @@ class EventActionDialog extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.12),
+            color: color.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, color: color, size: 20),
@@ -454,7 +463,7 @@ class EventActionDialog extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).textTheme.labelSmall?.color?.withOpacity(0.65),
+                  color: Theme.of(context).textTheme.labelSmall?.color?.withValues(alpha: 0.65),
                   fontWeight: FontWeight.w500,
                   fontSize: 11,
                 ),
@@ -483,9 +492,9 @@ class EventActionDialog extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withOpacity(0.15), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.15), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -498,7 +507,7 @@ class EventActionDialog extends StatelessWidget {
                 child: Text(
                   label,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).textTheme.labelSmall?.color?.withOpacity(0.65),
+                    color: Theme.of(context).textTheme.labelSmall?.color?.withValues(alpha: 0.65),
                     fontWeight: FontWeight.w500,
                     fontSize: 10,
                   ),
@@ -523,9 +532,9 @@ class EventActionDialog extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.07),
+        color: color.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.2), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
       ),
       child: Row(
         children: [
@@ -534,14 +543,14 @@ class EventActionDialog extends StatelessWidget {
             height: 44,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [color, color.withOpacity(0.7)],
+                colors: [color, color.withValues(alpha: 0.7)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.25),
+                  color: color.withValues(alpha: 0.25),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -578,7 +587,7 @@ class EventActionDialog extends StatelessWidget {
                 Text(
                   '${voiceNote.duration.inSeconds}s • ${DateFormat('MMM d, h:mm a').format(voiceNote.recordedAt)}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.65),
+                    color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.65),
                     fontSize: 11,
                   ),
                 ),
@@ -591,7 +600,7 @@ class EventActionDialog extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                         decoration: BoxDecoration(
-                          color: color.withOpacity(0.2),
+                          color: color.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
@@ -617,9 +626,9 @@ class EventActionDialog extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.07),
+        color: color.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.2), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
       ),
       child: Row(
         children: [
@@ -628,14 +637,14 @@ class EventActionDialog extends StatelessWidget {
             height: 44,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [color, color.withOpacity(0.7)],
+                colors: [color, color.withValues(alpha: 0.7)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.25),
+                  color: color.withValues(alpha: 0.25),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -676,9 +685,9 @@ class EventActionDialog extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.07),
+        color: color.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.2), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
       ),
       child: Row(
         children: [
@@ -687,14 +696,14 @@ class EventActionDialog extends StatelessWidget {
             height: 44,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [color, color.withOpacity(0.7)],
+                colors: [color, color.withValues(alpha: 0.7)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.25),
+                  color: color.withValues(alpha: 0.25),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -822,7 +831,7 @@ Widget _buildClassActions(BuildContext context, Color color) {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: color.withOpacity(0.15),
+                      color: color.withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -846,7 +855,7 @@ Widget _buildClassActions(BuildContext context, Color color) {
                         Text(
                           event.title,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                            color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                           ),
                         ),
                       ],
@@ -856,7 +865,7 @@ Widget _buildClassActions(BuildContext context, Color color) {
                     onPressed: () => Navigator.pop(dialogContext),
                     icon: const Icon(Icons.close),
                     style: IconButton.styleFrom(
-                      backgroundColor: color.withOpacity(0.1),
+                      backgroundColor: color.withValues(alpha: 0.1),
                       foregroundColor: color,
                     ),
                   ),
@@ -879,7 +888,7 @@ Widget _buildClassActions(BuildContext context, Color color) {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.08),
+                        color: statusColor.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: statusColor,
@@ -891,7 +900,7 @@ Widget _buildClassActions(BuildContext context, Color color) {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.15),
+                              color: statusColor.withValues(alpha: 0.15),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
@@ -917,7 +926,7 @@ Widget _buildClassActions(BuildContext context, Color color) {
                                 Text(
                                   _getAttendanceDescription(status),
                                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
+                                    color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                                     fontSize: 12,
                                   ),
                                 ),
@@ -1059,7 +1068,7 @@ Widget _buildClassActions(BuildContext context, Color color) {
     dataProvider.markAttendance(record);
     
     // Update event completion color and status based on attendance
-    event.completionColor = '#${_getAttendanceColor(status).value.toRadixString(16).substring(2)}';
+    event.completionColor = '#${_getAttendanceColor(status).toARGB32().toRadixString(16).substring(2)}';
     event.isCompleted = true; 
     dataProvider.updateEvent(event);
     

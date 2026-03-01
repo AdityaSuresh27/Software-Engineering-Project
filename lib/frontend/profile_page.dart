@@ -65,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
       Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppTheme.primaryBlue.withOpacity(0.1),
+          color: AppTheme.primaryBlue.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(
@@ -299,7 +299,7 @@ class _ProfilePageState extends State<ProfilePage> {
             borderRadius: BorderRadius.circular(15),
             color: isMfaEnabled
                 ? AppTheme.successGreen
-                : Colors.grey.withOpacity(0.4),
+                : Colors.grey.withValues(alpha: 0.4),
           ),
           child: Stack(
             children: [
