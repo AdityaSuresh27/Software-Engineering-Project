@@ -362,14 +362,15 @@ flutter test --coverage
 
 **Test Coverage:**
 - ✓ Module 1: Courses and Timetable (4 tests) - Create, update, delete timetable entries; auto-generate events
-- ✓ Module 2: Calendar and Schedule (6 tests) - Event CRUD, day filtering, completion tracking, categorization
-- ✓ Module 3: Attendance Calculator & Risk Predictor (5 tests) - Mark attendance, calculate statistics, identify at-risk students
+- ✓ Module 2: Calendar and Schedule (5 tests) - Event CRUD, day filtering, completion tracking, deletion
+- ✓ Module 3: Attendance Calculator & Risk Predictor (5 tests) - Mark attendance, calculate statistics, update/delete records
 - ✓ Module 4: Notes and Voice Notes (3 tests) - Text notes, voice notes, multiple note management
-- ✓ Module 5: Notification and Reminders (5 tests) - Create reminders, manage settings, priority notifications
+- ✓ Module 5: Notification and Reminders (4 tests) - Create reminders, manage settings, retrieve active reminders, priority notifications
 - ✓ Integration Tests (2 tests) - Full workflow testing, category filtering
-- **Total: 26/26 tests passing ✓**
+- ✓ Summary Report (1 test) - Comprehensive test suite reporting
+- **Total: 24/24 tests passing ✓** (4+5+5+3+4+2+1)
 
-**Test Report:** See `app_testing_report.md` for detailed test results and feature verification checklist.
+**Test Report:** See `app_testing_report.md` for detailed test results (24/24 passing) and feature verification checklist.
 
 ### Code Formatting
 ```bash
@@ -380,18 +381,6 @@ flutter format .
 ```bash
 flutter analyze
 ```
-
-### Building and Committing
-
-When making significant changes, use descriptive commit messages:
-```bash
-git add .
-git commit -m "Your descriptive commit message"
-```
-
-Recent commits:
-- ✓ Improve splash screen: enlarge logo and normalize ClassFlow typography
-- ✓ Fix widget tests: initialize Flutter bindings and improve test data isolation for 24/24 pass rate
 
 ## Version Information
 
