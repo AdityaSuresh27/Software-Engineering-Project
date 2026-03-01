@@ -5,6 +5,7 @@ import '../backend/data_provider.dart';
 import '../backend/timetable_models.dart';
 import 'theme.dart';
 import 'class_attendance_details_page.dart';
+import 'attendance_predictor.dart';
 
 class AttendancePage extends StatefulWidget {
   const AttendancePage({super.key});
@@ -60,6 +61,17 @@ class _AttendancePageState extends State<AttendancePage> {
                 tooltip: 'Options',
                 iconData: Icons.more_vert_rounded,
                 itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'predict',
+                    child: Row(
+                      children: [
+                        Icon(Icons.show_chart, color: AppTheme.primaryBlue),
+                        SizedBox(width: 8),
+                        Text('Attendance Predictor', style: TextStyle(color: AppTheme.primaryBlue)),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuDivider(),
                   const PopupMenuItem(
                     value: 'reset',
                     child: Row(
@@ -72,7 +84,9 @@ class _AttendancePageState extends State<AttendancePage> {
                   ),
                 ],
                 onSelected: (value) {
-                  if (value == 'reset') {
+                  if (value == 'predict') {
+                    _showPredictorSelection(context, courseNames);
+                  } else if (value == 'reset') {
                     _showResetConfirmation(context, dataProvider);
                   }
                 },
@@ -450,6 +464,136 @@ class _AttendancePageState extends State<AttendancePage> {
             child: const Text('Reset All'),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showPredictorSelection(BuildContext context, Set<String> courseNames) {
+    final selectedCourses = <String>{};
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            title: const Text('Select Courses for Predictor'),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Select All Button
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: FilledButton.tonal(
+                      onPressed: () {
+                        setDialogState(() {
+                          if (selectedCourses.length == courseNames.length) {
+                            selectedCourses.clear();
+                          } else {
+                            selectedCourses.clear();
+                            selectedCourses.addAll(courseNames);
+                          }
+                        });
+                      },
+                      child: Text(
+                        selectedCourses.length == courseNames.length
+                            ? 'Deselect All'
+                            : 'Select All',
+                      ),
+                    ),
+                  ),
+                  
+                  // Course List
+                  Flexible(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: courseNames.length,
+                      itemBuilder: (context, index) {
+                        final courseName = courseNames.elementAt(index);
+                        
+                        return Consumer<DataProvider>(
+                          builder: (context, dataProvider, _) {
+                            // Get first class event for this course to extract color
+                            final classEvent = dataProvider.events.firstWhere(
+                              (e) => e.classification == 'class' && e.title == courseName,
+                              orElse: () => dataProvider.events.first,
+                            );
+                            
+                            final color = classEvent.color != null
+                                ? Color(int.parse(classEvent.color!.replaceFirst('#', '0xFF')))
+                                : AppTheme.classBlue;
+
+                            final isSelected = selectedCourses.contains(courseName);
+
+                            return CheckboxListTile(
+                              title: Text(courseName),
+                              value: isSelected,
+                              secondary: Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: color,
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                setDialogState(() {
+                                  if (value == true) {
+                                    selectedCourses.add(courseName);
+                                  } else {
+                                    selectedCourses.remove(courseName);
+                                  }
+                                });
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: selectedCourses.isEmpty
+                    ? null
+                    : () {
+                        // Build selected courses map with colors
+                        final selectedWithColors = <String, Color>{};
+                        final dataProvider = Provider.of<DataProvider>(context, listen: false);
+                        
+                        for (var courseName in selectedCourses) {
+                          final classEvent = dataProvider.events.firstWhere(
+                            (e) => e.classification == 'class' && e.title == courseName,
+                            orElse: () => dataProvider.events.first,
+                          );
+                          final color = classEvent.color != null
+                              ? Color(int.parse(classEvent.color!.replaceFirst('#', '0xFF')))
+                              : AppTheme.classBlue;
+                          selectedWithColors[courseName] = color;
+                        }
+
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AttendancePredictorPage(
+                              initialSelectedCourses: selectedWithColors,
+                            ),
+                          ),
+                        );
+                      },
+                child: const Text('Confirm'),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

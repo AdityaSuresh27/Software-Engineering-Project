@@ -7,6 +7,7 @@ import '../backend/data_provider.dart';
 import '../backend/models.dart';
 import '../backend/timetable_models.dart';
 import 'theme.dart';
+import 'attendance_predictor.dart';
 
 class ClassAttendanceDetailsPage extends StatelessWidget {
   final String courseName;
@@ -46,28 +47,45 @@ class ClassAttendanceDetailsPage extends StatelessWidget {
           appBar: AppBar(
             title: Text(courseName),
             actions: [
-              if (allRecords.isNotEmpty)
-                AppPopupMenuButton<String>(
-                  tooltip: 'Options',
-                  iconData: Icons.more_vert_rounded,
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 'clear',
-                      child: Row(
-                        children: [
-                          Icon(Icons.delete_sweep, color: Colors.red),
-                          SizedBox(width: 8),
-                          Text('Clear All Records', style: TextStyle(color: Colors.red)),
-                        ],
+              // Attendance Predictor Button
+              Tooltip(
+                message: 'Predict attendance with leaves',
+                child: IconButton(
+                  icon: const Icon(Icons.show_chart),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AttendancePredictorPage(
+                          initialCourseName: courseName,
+                          initialColor: color,
+                        ),
                       ),
-                    ),
-                  ],
-                  onSelected: (value) {
-                    if (value == 'clear') {
-                      _showClearConfirmation(context, dataProvider);
-                    }
+                    );
                   },
                 ),
+              ),
+              AppPopupMenuButton<String>(
+                tooltip: 'Delete Course',
+                iconData: Icons.delete_outlined,
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 'delete',
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete, color: Colors.red),
+                        SizedBox(width: 8),
+                        Text('Delete Course', style: TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                  ),
+                ],
+                onSelected: (value) {
+                  if (value == 'delete') {
+                    _showDeleteConfirmation(context, dataProvider);
+                  }
+                },
+              ),
             ],
           ),
           body: Column(
@@ -717,13 +735,13 @@ void _showEditAttendanceDialog(
           return Icons.block;
       }
     }
-  void _showClearConfirmation(BuildContext context, DataProvider dataProvider) {
+  void _showDeleteConfirmation(BuildContext context, DataProvider dataProvider) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Clear All Records?'),
+        title: const Text('Delete Course?'),
         content: Text(
-          'This will delete all attendance records for "$courseName". This action cannot be undone.',
+          'This will permanently delete "$courseName" from your timetable, events, and attendance records. This action cannot be undone.',
         ),
         actions: [
           TextButton(
@@ -732,16 +750,17 @@ void _showEditAttendanceDialog(
           ),
           FilledButton(
             onPressed: () {
-              dataProvider.clearAttendanceForCourse(courseName);
+              dataProvider.deleteCourseByName(courseName);
+              Navigator.pop(context);
               Navigator.pop(context);
               AppTheme.showTopNotification(
                   context,
-                  'All records cleared for $courseName.',
-                  type: NotificationType.info,
+                  '$courseName has been deleted.',
+                  type: NotificationType.success,
                 );
             },
             style: FilledButton.styleFrom(backgroundColor: AppTheme.errorRed),
-            child: const Text('Clear All'),
+            child: const Text('Delete'),
           ),
         ],
       ),

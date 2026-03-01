@@ -943,4 +943,37 @@ void clearAttendanceForCourse(String courseName) {
   _saveData();
   notifyListeners();
 }
+
+// Delete a course completely (from timetable, events, and attendance)
+void deleteCourseByName(String courseName) {
+  // Find and delete all timetable entries for this course
+  final entriesToDelete = _timetableEntries
+      .where((e) => e.courseName.toLowerCase() == courseName.toLowerCase())
+      .map((e) => e.id)
+      .toList();
+  
+  for (var id in entriesToDelete) {
+    _timetableEntries.removeWhere((e) => e.id == id);
+    
+    // Remove auto-generated events for this timetable entry
+    _events.removeWhere((e) => 
+      e.metadata != null && 
+      e.metadata!['timetableEntryId'] == id
+    );
+  }
+  
+  // Remove all class events with this course name (both auto-generated and manual)
+  _events.removeWhere((e) => 
+    e.classification == 'class' && 
+    e.title.toLowerCase() == courseName.toLowerCase()
+  );
+  
+  // Remove all attendance records for this course
+  _attendanceRecords.removeWhere((r) => 
+    r.courseName.toLowerCase() == courseName.toLowerCase()
+  );
+  
+  _saveData();
+  notifyListeners();
+}
 }
