@@ -1,4 +1,18 @@
-// main_navigation.dart
+/// MainNavigation - App Navigation Hub
+/// 
+/// Central navigation container with bottom navigation bar providing access
+/// to all main screens of ClassFlow.
+/// 
+/// Screens:
+/// - Home: Dashboard with daily overview
+/// - Calendar: Visual calendar view
+/// - Timeline: Hour-by-hour schedule view
+/// - Events: Complete event list with filtering
+/// - Profile: User settings and preferences
+/// 
+/// Uses BottomNavigationBar for easy screen switching while maintaining
+/// state for each screen.
+
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'calendar_page.dart';

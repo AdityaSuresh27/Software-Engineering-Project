@@ -1,4 +1,19 @@
-// calendar_page.dart
+/// CalendarPage - Visual Calendar with Event Overview
+/// 
+/// Monthly calendar view showing all events with visual indicators.
+/// 
+/// Features:
+/// - Interactive calendar grid with month/year navigation
+/// - Event dots/badges on dates with scheduled events
+/// - Tap date to see all events for that day
+/// - Color-coded event indicators by classification
+/// - Week view and month view options
+/// - Today button for quick navigation
+/// - Event count badges on each date
+/// - Tap event to view/edit details
+/// 
+/// Syncs automatically with timetable entries and manually-created events.
+
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';

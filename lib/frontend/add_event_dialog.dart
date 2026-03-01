@@ -1,4 +1,20 @@
-// add_event_dialog.dart - REDESIGNED VERSION
+/// AddEventDialog - Create or Edit Events
+/// 
+/// Dialog for creating new events or editing existing ones with full customization.
+/// 
+/// Features:
+/// - Select event classification (Class, Exam, Assignment, Meeting, Personal, Other)
+/// - Set title, date, start/end time
+/// - Add location, notes, and attachments
+/// - Assign category/subject for filtering
+/// - Set priority level (Low/Medium/High/Critical)
+/// - Mark as important for priority notifications
+/// - Add multiple reminders with custom times
+/// - Attach voice notes to event
+/// - Color customization option
+/// 
+/// Validates required fields and persists to DataProvider on save.
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';

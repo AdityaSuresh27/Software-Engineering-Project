@@ -1,4 +1,18 @@
-// auth_screen.dart
+/// AuthScreen - User Login Interface
+/// 
+/// Login screen for user authentication with email/password support.
+/// 
+/// Features:
+/// - Email/password login form
+/// - "Forgot Password" link for password recovery
+/// - Sign up redirect for new users
+/// - Multi-factor authentication (MFA) option
+/// - Persistent session tracking (saved in SharedPreferences)
+/// - Form validation
+/// 
+/// On successful login, redirects to MainNavigation.
+/// On failed login, displays error message with retry option.
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../backend/data_provider.dart';

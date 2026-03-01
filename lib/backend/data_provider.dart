@@ -1,4 +1,21 @@
-// data_provider.dart
+/// DataProvider - Central State Management for ClassFlow
+/// 
+/// This class manages all app state including:
+/// - Events (class, exam, assignment, meeting, personal, other)
+/// - Timetable entries (recurring course schedules)
+/// - Attendance records (per-class session tracking)
+/// - Categories and user preferences
+/// - Authentication and notification settings
+/// 
+/// All data persists locally using SharedPreferences
+/// Use DataProvider.ready future to ensure data is loaded before UI displays
+/// 
+/// Example usage:
+///   final provider = DataProvider();
+///   await provider.ready; // Wait for data to load
+///   provider.addEvent(event);
+///   provider.notifyListeners(); // Notify UI of changes
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -9,24 +26,43 @@ import 'dart:async';
 import 'package:uuid/uuid.dart';
 
 class DataProvider extends ChangeNotifier {
+  // ========== EVENTS & SCHEDULING ==========
+  /// All events in the app (classes, exams, assignments, etc.)
   List<Event> _events = [];
+  
+  // ========== TIMETABLE & COURSES ==========
+  /// Recurring course schedules - auto-generates events when added
+  List<TimetableEntry> _timetableEntries = [];
+  
+  // ========== ATTENDANCE TRACKING ==========
+  /// Attendance records - used to calculate statistics and identify at-risk students
+  List<AttendanceRecord> _attendanceRecords = [];
+  
+  // ========== ORGANIZATION & CATEGORIES ==========
+  /// User-defined categories for organizing events (Math, Science, etc.)
   List<Category> _categories = [];
+  
+  // ========== USER AUTHENTICATION & PREFERENCES ==========
+  /// Whether user is logged in
   bool _isAuthenticated = false;
   bool _mfaEnabled = false;
   DateTime? _lastActiveAt;
-  // Global notification toggles — each maps to a profile settings switch
-  bool _notifyReminders = true;   // user-set reminder times on events
-  bool _notifyEventStart = true;  // fires when an event's startTime arrives
-  bool _muteStartupSound = false; // mute startup.mp3 on app launch
-  bool _muteRingtone = false;     // mute accept1.mp3 and accept2.mp3
-  List<TimetableEntry> _timetableEntries = [];
-  List<AttendanceRecord> _attendanceRecords = [];
-  // Completes once both _loadData and _checkAuthStatus have finished.
-  // The splash screen awaits this instead of polling, eliminating the
-  // race condition where isAuthenticated is read before prefs are loaded.
+  
+  // ========== NOTIFICATION TOGGLES ==========
+  /// Global controls for different notification types
+  bool _notifyReminders = true;   // Custom reminders set by user on events
+  bool _notifyEventStart = true;  // Notifications when event start time arrives
+  bool _muteStartupSound = false; // Mute app launch sound
+  bool _muteRingtone = false;     // Mute notification sounds
+  
+  // ========== INITIALIZATION & READY STATE ==========
+  /// Completes when both _loadData() and _checkAuthStatus() finish
+  /// The splash screen awaits this to ensure data is ready before displaying
   final Completer<void> _readyCompleter = Completer<void>();
   Future<void> get ready => _readyCompleter.future;
 
+  // ========== GETTERS ==========
+  /// Access all data through these getters (read-only)
   List<TimetableEntry> get timetableEntries => _timetableEntries;
   List<AttendanceRecord> get attendanceRecords => _attendanceRecords;
   List<Event> get events => _events;
@@ -38,15 +74,17 @@ class DataProvider extends ChangeNotifier {
   bool get muteStartupSound => _muteStartupSound;
   bool get muteRingtone => _muteRingtone;
 
+  /// Constructor - Initializes data loading from SharedPreferences
+  /// Loads both user data and authentication status concurrently
 DataProvider() {
-    // Run both loads concurrently and complete the ready future only after
-    // both finish, so the splash screen gets an accurate isAuthenticated value.
+    // Load data and check auth in parallel, complete ready future after both finish
     Future.wait([_loadData(), _checkAuthStatus()]).then((_) {
       if (!_readyCompleter.isCompleted) _readyCompleter.complete();
     });
   }
 
-  // Check authentication status
+  // ========== AUTHENTICATION ==========
+  /// Check if user is currently authenticated
 Future<void> _checkAuthStatus() async {
     final prefs = await SharedPreferences.getInstance();
     _mfaEnabled = prefs.getBool('mfaEnabled') ?? false;

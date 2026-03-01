@@ -1,4 +1,18 @@
-// splash_screen.dart
+/// SplashScreen - App Launch Animation & Branding
+/// 
+/// Displays ClassFlow branding with animated logo, text, and visual effects
+/// while waiting for DataProvider to load data from SharedPreferences.
+/// 
+/// Features:
+/// - Animated logo entrance with scaling/rotation
+/// - Character-by-character text animation for "ClassFlow"
+/// - Glow pulse effect around logo
+/// - Particle effects for visual interest
+/// - Auto-redirects to Home or Login based on authentication status
+/// 
+/// The screen waits for provider.ready future before proceeding to ensure
+/// all user data and preferences are loaded from storage.
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
@@ -423,8 +437,6 @@ class _SplashScreenState extends State<SplashScreen>
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: List.generate(_word.length, (i) {
-                      final isUpperFirst = i == 0; // C
-                      final isUpperSecond = i == 5; // F
                       return AnimatedBuilder(
                         animation: _letterControllers[i],
                         builder: (context, _) {

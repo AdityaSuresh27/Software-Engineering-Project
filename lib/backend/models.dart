@@ -1,20 +1,47 @@
-// models.dart
+/// Models - Core Data Structures for ClassFlow
+/// 
+/// This file defines the main models used throughout the app:
+/// - Event: Class, exam, assignment, meeting, personal event
+/// - VoiceNote: Audio recording attached to an event
+/// - Category: User-defined grouping for events
+/// 
+/// All models support serialization to JSON for persistent storage
+
+// ========== EVENT MODEL ==========
+/// Event - Represents any calendar event
+/// 
+/// Types: 'class', 'exam', 'assignment', 'deadline', 'meeting', 'personal', 'other'
+/// Priorities: 'low', 'medium', 'high', 'critical'
+/// 
 class Event {
   final String id;
   String title;
+  /// Classification determines event type: class, exam, assignment, or meeting
   String classification; // 'class', 'exam', 'assignment', 'deadline', 'meeting', 'personal', 'other'
+  /// Category used for filtering and organization (e.g., 'Math', 'Biology')
   String? category; // Subject/Course name
+  /// Start time of the event
   DateTime startTime;
+  /// End time - optional for tasks/deadlines
   DateTime? endTime; // Optional for tasks/deadlines
+  /// Event location (classroom, online, etc.)
   String? location;
+  /// Text notes attached to event
   String? notes;
+  /// File attachments (not yet implemented)
   List<String> attachments;
+  /// Audio recordings attached to event
   List<VoiceNote> voiceNotes;
+  /// Whether event has been completed/done
   bool isCompleted;
   String? completionColor;
+  /// Priority level affects notification urgency
   String priority; // 'low', 'medium', 'high', 'critical'
+  /// Estimated time to complete (for assignments)
   String? estimatedDuration; // For assignments
+  /// Flag for important/starred events - triggers priority notifications
   bool isImportant; // Star/flag for emphasis
+  /// Custom reminder times - can have multiple reminders per event
   List<DateTime> reminders;
   String? color; // Custom color override
   int periodCount; // How many periods/classes this event counts for (default 1)

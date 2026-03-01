@@ -1,4 +1,20 @@
-// profile_page.dart
+/// ProfilePage - User Settings & Preferences
+/// 
+/// Centralized settings screen for managing user preferences and account.
+/// 
+/// Features:
+/// - User account information display
+/// - Notification preferences (reminders, event start, sounds)
+/// - Theme selection (Light/Dark mode)
+/// - Manage event categories
+/// - Privacy policy and terms
+/// - App version and about information
+/// - Sign out functionality
+/// - Clear all data option
+/// - Authentication status display
+/// 
+/// All preferences are saved to DataProvider and persist via SharedPreferences.
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'theme.dart';

@@ -1,4 +1,18 @@
-// voice_note_player.dart
+/// VoiceNotePlayer - Audio Playback Widget
+/// 
+/// Reusable widget for playing voice notes attached to events.
+/// 
+/// Features:
+/// - Play/pause controls with progress slider
+/// - Duration display (current/total time)
+/// - Visual waveform simulation
+/// - Delete button for removing voice note
+/// - Tap to play/pause
+/// - Audio streaming from stored file path
+/// 
+/// Can be used anywhere voice notes need to be played back
+/// (events, event details, voice note list, etc.)
+
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'dart:io';

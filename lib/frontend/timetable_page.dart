@@ -1,4 +1,23 @@
-// timetable_page.dart
+/// TimetablePage - Course Schedule Management
+/// 
+/// Displays recurring class schedules organized by day of the week.
+/// 
+/// Features:
+/// - Day-by-day view with tabbed navigation (Monday-Sunday)
+/// - Current day auto-selected on load
+/// - Add new course schedules with:
+///   - Course name, code, instructor, room
+///   - Days and times
+///   - Semester date range
+/// - View all classes for each day with full details
+/// - Edit/delete course schedules
+/// - Drag-to-delete for quick removal
+/// - Auto-generates calendar events when timetable is created
+/// - Link to attendance tracking
+/// 
+/// Timetable entries persist and automatically create events for all
+/// scheduled days within the semester period.
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../backend/data_provider.dart';

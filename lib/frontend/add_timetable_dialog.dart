@@ -1,4 +1,20 @@
-// add_timetable_dialog.dart
+/// AddTimetableDialog - Create or Edit Course Schedules
+/// 
+/// Dialog for adding recurring course schedules that auto-generate calendar events.
+/// 
+/// Features:
+/// - Enter course name and code
+/// - Set instructor and room/location
+/// - Select days of week (multiple selection, e.g., MWF)
+/// - Set start and end times
+/// - Define semester start and end dates
+/// - Optional exclude specific dates (holidays, breaks)
+/// - Assign category for organization
+/// - Color customization
+/// 
+/// When saved, automatically creates Event records for all scheduled days
+/// within the semester period. Auto-excludes any dates in excludedDates.
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';

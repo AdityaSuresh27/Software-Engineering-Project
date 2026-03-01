@@ -1,4 +1,20 @@
-// theme.dart
+/// AppTheme - Centralized Design System
+/// 
+/// Defines all colors, typography, and theme configurations used throughout ClassFlow.
+/// 
+/// Features:
+/// - Professional color palette for all UI elements
+/// - Event type-specific colors (class, exam, assignment, etc.)
+/// - Attendance status colors (Safe/Warning/At Risk)
+/// - Priority level colors (Low/Medium/High/Critical)
+/// - Reusable TextTheme styles
+/// - Light and dark theme support
+/// - Material 3 compatibility
+/// 
+/// Usage:
+///   Text('Hello', style: TextStyle(color: AppTheme.primaryBlue))
+///   Container(color: AppTheme.successGreen)
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

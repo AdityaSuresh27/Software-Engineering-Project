@@ -1,4 +1,22 @@
-// events_page.dart
+/// EventsPage - Event List with Filtering & Sorting
+/// 
+/// Comprehensive view of all events with advanced filtering and organization.
+/// 
+/// Features:
+/// - Filter by classification (Class, Exam, Assignment, Meeting, Personal, Other)
+/// - Sort by date, priority level, or type
+/// - Search events by title or notes
+/// - Mark events as complete/incomplete
+/// - Swipe to delete events
+/// - Tap to view/edit event details
+/// - Add notes and voice recordings
+/// - Set reminders and priorities
+/// - Color-coded priority levels (Low/Medium/High/Critical)
+/// - Important event flagging with star indicator
+/// 
+/// Only shows incomplete events. Completed events can be filtered separately.
+/// All changes persist to local storage via DataProvider.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';

@@ -1,4 +1,18 @@
-// voice_recorder_dialog.dart
+/// VoiceRecorderDialog - Record Audio Notes
+/// 
+/// Dialog interface for recording voice notes to attach to events.
+/// 
+/// Features:
+/// - Start/stop recording with visual timer
+/// - Playback of recorded audio before saving
+/// - Save/discard recording
+/// - Add tags for organization (e.g., 'important', 'review')
+/// - Automatic file storage with metadata
+/// - Duration tracking
+/// 
+/// Recorded audio files are stored in the app's documents directory
+/// and referenced in event voiceNotes list.
+
 import 'package:flutter/material.dart';
 import 'package:record/record.dart';
 import 'package:path_provider/path_provider.dart';

@@ -1,4 +1,18 @@
-// home_page.dart
+/// HomePage - Main Dashboard & Quick Navigation
+/// 
+/// Central hub displaying today's overview and quick access to all features.
+/// 
+/// Features:
+/// - Greeting and current date/time
+/// - Today's event summary (tasks, classes, upcoming events)
+/// - Attendance statistics per course
+/// - Quick action buttons (Add Event, View Timetable, Check Attendance)
+/// - Navigation to Calendar, Events, Timetable, and Attendance screens
+/// - Pull-to-refresh support
+/// - Time-based greeting (Good Morning/Afternoon/Evening)
+/// 
+/// This is the main entry point after authentication/splash screen.
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';

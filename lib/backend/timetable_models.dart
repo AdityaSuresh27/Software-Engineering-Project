@@ -1,18 +1,49 @@
-//timetable_models.dart
+/// Timetable Models - Course Schedule Management
+/// 
+/// This file defines models for managing recurring class schedules:
+/// - TimetableEntry: Course schedule that auto-generates events
+/// - AttendanceRecord: Records for marking attendance on class sessions
+/// - AttendanceStats: Calculated attendance statistics per course
+/// 
+/// When a TimetableEntry is added, it automatically creates Event records
+/// for each scheduled day within the semester date range
+
 import 'package:flutter/material.dart';
+
+// ========== TIMETABLE ENTRY ==========
+/// TimetableEntry - Represents a recurring course schedule
+/// 
+/// When added to DataProvider, automatically generates Events for:
+/// - Each day in daysOfWeek (1=Monday, 7=Sunday)
+/// - Within the semester date range
+/// - Excluding dates in excludedDates (holidays, breaks)
+/// 
+/// Example: Monday/Wednesday/Friday 9:00-10:30 from Jan 1 - May 31
+/// generates ~40 class events (3 per week × ~13 weeks)
 class TimetableEntry {
   final String id;
+  /// Course name (e.g., 'Computer Science 101')
   String courseName;
+  /// Course code (e.g., 'CS101')
   String? courseCode;
+  /// Professor/instructor name
   String? instructor;
+  /// Classroom location
   String? room;
+  /// Days this class meets: 1=Monday through 7=Sunday (e.g., [1,3,5] = MWF)
   List<int> daysOfWeek; // 1=Monday, 7=Sunday
+  /// Start time for each class session (e.g., 9:00 AM)
   TimeOfDay startTime;
+  /// End time for each class session (e.g., 10:30 AM)
   TimeOfDay endTime;
+  /// Category for filtering/organization (optional, e.g., 'Major Requirement')
   String? category; // Link to existing categories
   String? color;
+  /// First day of semester - used to generate events
   DateTime? semesterStart;
+  /// Last day of semester - events generated up to this date
   DateTime? semesterEnd;
+  /// ISO date strings for holidays/breaks to skip (e.g., ['2024-03-18', '2024-11-28'])
   List<String> excludedDates; // ISO strings for holidays/breaks
   int periodCount; // How many periods this entry counts for (default 1)
 

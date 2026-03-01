@@ -1,4 +1,18 @@
-// attendance_page.dart
+/// AttendancePage - Attendance Tracking & Risk Analysis
+/// 
+/// Displays attendance statistics across all courses and identifies at-risk students.
+/// 
+/// Features:
+/// - Overall attendance percentage per course
+/// - Color-coded risk indicators (Safe/Warning/At Risk based on <75% threshold)
+/// - Mark attendance for classes
+/// - View detailed attendance history per class
+/// - Attendance predictor showing future risk based on current rate
+/// - Tap course to view session-by-session attendance
+/// 
+/// Statistics update automatically when attendance is marked or updated.
+/// At-risk students (<75% attendance) are highlighted for intervention.
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../backend/data_provider.dart';

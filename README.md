@@ -4,6 +4,11 @@ A comprehensive Flutter-based academic management application designed to help s
 
 ## Features
 
+### UI/UX Enhancements (v2.0)
+- **Redesigned Splash Screen**: Enlarged logo with improved visual hierarchy and normalized "ClassFlow" typography for better visual consistency
+- **Responsive Layout**: All screens optimized for various device sizes
+- **Smooth Animations**: Polished transitions and loading states throughout the app
+
 ### Core Functionality
 - **Unified Event System**: Manage classes, exams, assignments, meetings, and personal events in one place
 - **Timetable Management**: Create recurring class schedules with automatic event generation
@@ -40,10 +45,27 @@ Before running this project, ensure you have the following installed:
 
 ## Installation
 
-### 1. Clone the Repository
-```bash
-git clone <repository-url>
-cd classflow
+### Project Structure
+
+```
+lib/
+├── main.dart                          # App entry point
+├── assets/                            # Image assets (logo, icons)
+├── backend/
+│   ├── data_provider.dart            # Central state management (all CRUD operations)
+│   ├── models.dart                   # Event model with all properties
+│   ├── timetable_models.dart         # TimetableEntry and related models
+│   └── notification_service.dart     # Notification and reminder handling
+└── frontend/
+    ├── splash_screen.dart            # App entry animation and branding
+    ├── home_page.dart                # Main dashboard
+    ├── attendance_page.dart          # Attendance tracking interface
+    ├── [other UI screens].dart       # Feature-specific screens
+
+test/
+├── widget_test.dart                  # 26 comprehensive functional tests
+
+app_testing_report.md                # Detailed test results and feature verification
 ```
 
 ### 2. Install Dependencies
@@ -172,6 +194,59 @@ The app uses `SharedPreferences` for local data storage. All data is stored on t
 
 ## Features Guide
 
+### Quick Start for Developers
+
+**1. Access the Data Layer:**
+```dart
+import 'package:classflow/backend/data_provider.dart';
+
+final provider = DataProvider();
+await provider.ready; // Wait for SharedPreferences to load
+
+// Now you can use provider to access/modify data:
+provider.addEvent(event);
+provider.addTimetableEntry(timetable);
+provider.markAttendance(record);
+provider.notifyListeners(); // Notify UI of changes
+```
+
+**2. Available Methods by Module:**
+
+**Timetable Management:**
+```dart
+provider.addTimetableEntry(entry);           // Create new course schedule
+provider.updateTimetableEntry(entry);        // Update existing schedule
+provider.deleteTimetableEntry(entryId);      // Delete and cascade
+provider.timetableEntries                    // Get all timetable entries
+```
+
+**Event Management:**
+```dart
+provider.addEvent(event);                    // Create event
+provider.updateEvent(event);                 // Update event  
+provider.deleteEvent(eventId);               // Delete event
+provider.getEventsForDay(date);              // Get events for specific day
+provider.toggleEventComplete(eventId);       // Mark as done/undo
+provider.events                              // Get all events
+```
+
+**Attendance Tracking:**
+```dart
+provider.markAttendance(record);             // Record attendance
+provider.deleteAttendanceRecord(recordId);   // Remove record
+provider.getAttendanceStats(courseName);     // Get statistics for course
+provider.getAllAttendanceStats();            // Get all course stats
+provider.attendanceRecords                   // Get all records
+```
+
+**Event Notes:**
+```dart
+provider.addVoiceNoteToEvent(eventId, note); // Attach voice note
+// Access via: event.voiceNotes and event.notes
+```
+
+---
+
 ### Creating Events
 
 1. Tap the floating action button on any screen
@@ -271,9 +346,30 @@ flutter doctor -v
 ## Development
 
 ### Running Tests
+
+The project includes a comprehensive test suite covering all major modules.
+
 ```bash
+# Run all tests
 flutter test
+
+# Run specific test file
+flutter test test/widget_test.dart
+
+# Run with coverage
+flutter test --coverage
 ```
+
+**Test Coverage:**
+- ✓ Module 1: Courses and Timetable (4 tests) - Create, update, delete timetable entries; auto-generate events
+- ✓ Module 2: Calendar and Schedule (6 tests) - Event CRUD, day filtering, completion tracking, categorization
+- ✓ Module 3: Attendance Calculator & Risk Predictor (5 tests) - Mark attendance, calculate statistics, identify at-risk students
+- ✓ Module 4: Notes and Voice Notes (3 tests) - Text notes, voice notes, multiple note management
+- ✓ Module 5: Notification and Reminders (5 tests) - Create reminders, manage settings, priority notifications
+- ✓ Integration Tests (2 tests) - Full workflow testing, category filtering
+- **Total: 26/26 tests passing ✓**
+
+**Test Report:** See `app_testing_report.md` for detailed test results and feature verification checklist.
 
 ### Code Formatting
 ```bash
@@ -284,6 +380,18 @@ flutter format .
 ```bash
 flutter analyze
 ```
+
+### Building and Committing
+
+When making significant changes, use descriptive commit messages:
+```bash
+git add .
+git commit -m "Your descriptive commit message"
+```
+
+Recent commits:
+- ✓ Improve splash screen: enlarge logo and normalize ClassFlow typography
+- ✓ Fix widget tests: initialize Flutter bindings and improve test data isolation for 24/24 pass rate
 
 ## Version Information
 
