@@ -373,8 +373,8 @@ class _SplashScreenState extends State<SplashScreen>
                                 ),
                                 // Logo container
                                 Container(
-                                  width: 220,
-                                  height: 220,
+                                  width: 280,
+                                  height: 280,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(40),
@@ -393,16 +393,19 @@ class _SplashScreenState extends State<SplashScreen>
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(40),
-                                    child: Image.asset(
-                                      'lib/assets/selogo.png',
-                                      fit: BoxFit.contain,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return const Icon(
-                                          Icons.school,
-                                          size: 80,
-                                          color: Color(0xFF2563EB),
-                                        );
-                                      },
+                                    child: Transform.scale(
+                                      scale: 1.2,
+                                      child: Image.asset(
+                                        'lib/assets/selogo.png',
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return const Icon(
+                                            Icons.school,
+                                            size: 80,
+                                            color: Color(0xFF2563EB),
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -432,7 +435,7 @@ class _SplashScreenState extends State<SplashScreen>
                               child: Text(
                                 _word[i],
                                 style: TextStyle(
-                                  fontSize: (isUpperFirst || isUpperSecond) ? 46 : 40,
+                                  fontSize: 40,
                                   fontWeight: FontWeight.w800,
                                   color: Colors.white,
                                   letterSpacing: -0.5,
